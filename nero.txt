@@ -1,0 +1,283 @@
+Secrets of Grič: NERO
+Žanr
+Povijesni murder mystery, istraživačka avantura, psihološki triler.
+
+Kratki opis
+Zagreb, 18. stoljeće.
+
+Grad je podijeljen između Gradeca i Kaptola. Ulice su pune straha, praznovjerja i političkih sukoba. Kada nekoliko žena optuženih za vještičarenje nestane pod sumnjivim okolnostima, mlada istražiteljica Nera počinje sumnjati da iza progona ne stoji religija ni narodna vjerovanja, već nešto mnogo mračnije.
+
+Dok tijela nestaju, a grad tone u kaos, Nera mora otkriti tko koristi optužbe za vještičarenje kao paravan za seriju ubojstava.
+
+U gradu gdje svi traže čudovišta, pravo zlo skriva se među najmoćnijima.
+
+Značenje naslova
+"NERO" predstavlja tamu.
+
+Ne radi se samo o mraku ulica starog Zagreba, već o mraku ljudske pohlepe, korupcije i straha.
+
+Kroz cijelu igru Nera prolazi kroz simboličan put iz tame prema svjetlu i istini.
+
+Glavna priča
+Žene diljem grada bivaju optužene za vještičarenje.
+
+Neke nestaju.
+
+Neke bivaju pronađene mrtve.
+
+Službene vlasti tvrde da je riječ o pravednim kaznama ili nesretnim slučajevima.
+
+No Nera otkriva da svaka žrtva ima nešto zajedničko:
+
+posjedovala je vrijedne informacije,
+bila je svjedok političkih tajni,
+ili je predstavljala prijetnju određenim moćnicima.
+Kako istraga napreduje, postaje jasno da netko koristi strah od vještica kako bi uklonio neželjene osobe.
+
+Sukob Gradeca i Kaptola
+Grad je podijeljen.
+
+Stanovnici Gradeca krive Kaptol.
+
+Stanovnici Kaptola krive Gradec.
+
+Svako novo ubojstvo dodatno raspiruje sukob.
+
+Nera mora istraživati obje strane grada i otkrivati skrivene saveze između ljudi koji se javno predstavljaju kao neprijatelji.
+
+Na kraju otkriva da pravi krivci djeluju iz sjene i koriste sukob Gradeca i Kaptola kao dimnu zavjesu.
+
+Simbol svijeće
+Svijeća je glavni simbol igre.
+
+Na svakom mjestu zločina nalazi se svijeća.
+
+U početku djeluje kao prijetnja.
+
+Kasnije postaje trag.
+
+Na kraju simbolizira istinu.
+
+Što je Nera bliže rješenju, svijet igre postaje svjetliji, a mračne lokacije postupno se osvjetljavaju.
+
+Glavne teme
+istina protiv laži
+znanje protiv praznovjerja
+moć protiv pravde
+svjetlo protiv tame
+položaj žena u društvu
+manipulacija strahom
+Završetak
+Nera razotkriva mrežu političara, plemića i crkvenih dužnosnika koji su godinama koristili optužbe za vještičarenje kako bi uklanjali protivnike.
+
+Posljednja scena odvija se u mračnoj prostoriji ispunjenoj ugašenim svijećama koje predstavljaju sve nevino stradale žene.
+
+Nakon razotkrivanja istine, jedna po jedna svijeća se pali.
+
+Mrak nestaje.
+
+NERO završava svjetlom.
+
+
+uuu i tipa da top osim u podne puca i kada je ubijena nova žrtva ... npr 
+1. Simbol vremena i smrti
+Grički top puca svaki dan u podne (povijesno utemeljeno).
+U tvojoj igri postaje simbol presude.
+Svaki pucanj = nova žrtva / novo ubojstvo
+
+
+Ideja zagonetke....
+
+
+Zagonetka: Svijeće nevinih
+Kontekst
+Nera pronalazi skrivenu prostoriju ispod Griča.
+
+U prostoriji se nalazi pet svijeća.
+
+Svaka predstavlja jednu nestalu ženu.
+
+Na zidu je uklesan natpis:
+
+"Pet je svjedočilo.
+Tri su lagale.
+Jedna je vidjela istinu.
+Pronađi njezin plamen."
+
+Pokraj svake svijeće nalazi se poruka.
+
+Svijeća I
+"Žena označena križem nije nevina."
+
+Svijeća II
+"Istina nije u prvoj ni petoj svijeći."
+
+Svijeća III
+"Svijeća V govori istinu."
+
+Svijeća IV
+"Svijeća II laže."
+
+Svijeća V
+"Svijeća III laže."
+
+Trag
+Nera pronalazi zapis:
+
+"Samo jedna govori istinu."
+
+Rješenje
+Provjera:
+
+Ako je III istinita:
+
+III kaže da je V istinita
+V kaže da je III lažna
+Nemoguće.
+
+Ako je V istinita:
+
+III je lažna
+III tvrdi da je V istinita
+To bi značilo da je III zapravo rekla istinu.
+
+Nemoguće.
+
+Ako je IV istinita:
+
+II laže
+II kaže:
+
+"Istina nije u prvoj ni petoj svijeći."
+
+Ako II laže, istina mora biti u I ili V.
+
+Ali tada IV više nije jedina istinita.
+
+Nemoguće.
+
+Ako je I istinita:
+
+Ostale moraju lagati.
+II laže → istina je u I ili V.
+
+III laže.
+
+IV laže → II zapravo govori istinu.
+
+Kontradikcija.
+
+Preostaje:
+
+Svijeća II
+jedina govori istinu.
+
+Nagrada
+Kad igrač zapali drugu svijeću:
+
+otvara se skriveni mehanizam
+vosak otkriva urezani simbol
+simbol odgovara oznaci na mjestu sljedećeg ubojstva
+Još bolja verzija za NERO
+Meni bi bila zanimljivija zagonetka koja koristi sukob Gradeca i Kaptola.
+
+Primjer:
+
+Na stolu se nalaze dvije karte Zagreba.
+
+Na jednoj su označena sva ubojstva.
+
+Na drugoj sve optužbe za vještičarenje.
+
+Igrač primijeti da mjesta ubojstava tvore oblik svijeće.
+
+Mjesta optužbi tvore križ.
+
+Kad se karte preklope, križ pokazuje točnu lokaciju tajne prostorije ispod Griča.
+
+To je vrsta zagonetke koja djeluje kao pravi detektivski zaključak, a ne samo matematički puzzle. Za ovakvu igru bih većinu zagonetki gradio upravo na promatranju tragova, kartama, dokumentima i simbolima svijeće.
+
+
+
+ideja zagonetki 
+
+Primjer
+Prva žrtva: MARA
+
+Na svijeći pronađenoj uz tijelo urezano je samo slovo:
+
+M
+
+Nera misli da je to potpis ubojice.
+
+Druga žrtva: ANA
+
+Na svijeći je:
+
+A
+
+Nera još uvijek ne vidi poveznicu.
+
+Treća žrtva: RUŽA
+
+Na svijeći je:
+
+R
+
+Četvrta žrtva: AGATA
+
+Na svijeći je:
+
+A
+
+Tek nakon četvrtog slučaja u dnevniku se pojavi mogućnost:
+
+Usporedi svijeće.
+
+Kad ih složi po redoslijedu ubojstava:
+
+M – A – R – A
+
+nastaje ime prve žrtve.
+
+Veliki obrat
+Nera tada shvaća:
+
+Ubojica ne ostavlja ime trenutne žrtve.
+
+Ostavlja ime sljedeće žrtve.
+
+Svaka svijeća je upozorenje koje nitko nije razumio.
+
+Primjer:
+
+Mjesto zločina	Slovo
+1	M
+2	A
+3	R
+4	A
+Tvori MARA.
+
+Kad Nera pronađe četvrtu svijeću, shvaća da je Mara sljedeća meta.
+
+Od tog trenutka igrač dobiva utrku s vremenom.
+
+Još mračnija verzija
+Na svijećama nisu slova nego simboli starog glagoljskog pisma.
+
+Tijekom igre Nera mora pronaći stari rukopis u samostanu.
+
+Tek tada može prevesti znakove.
+
+To bi se savršeno uklopilo u Zagreb 18. stoljeća i dalo dodatni povijesni element.
+
+Završni twist
+Na posljednjoj svijeći pronađe se niz slova:
+
+N E R A
+
+Po prvi put ime ne pripada žrtvi.
+
+Tada Nera shvaća da je ona sljedeća meta.
+
+To bi mogao biti jedan od najboljih trenutaka cijele priče jer se simbol svijeće od običnog traga pretvara u osobnu prijetnju.
