@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nero · Pitch</title>
+<title>NERO · Whispers of Grič - Pitch</title>
 <style>
   /* ---------- Paleta igre (iz GDD-a) ---------- */
   :root {
@@ -178,7 +178,7 @@
     background: radial-gradient(ellipse at center, #11161f 0%, #06080c 100%);
   }
   .showcase .frame img {
-    max-width: 92vw; max-height: 70vh;
+    max-width: 84vw; max-height: 60vh;
     object-fit: contain;
     box-shadow: 0 30px 80px rgba(0,0,0,.7);
     border: 1px solid rgba(201,168,76,.3);
@@ -186,7 +186,7 @@
   }
   .showcase .cap {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-    padding: 28px 8vw 26px;
+    padding: 28px 8vw 64px;
     background: linear-gradient(0deg, rgba(6,8,12,.92) 0%, rgba(6,8,12,.0) 100%);
   }
   .showcase .cap .kicker { margin-bottom: 8px; }
@@ -206,6 +206,48 @@
     background: linear-gradient(90deg, rgba(201,168,76,.08), transparent);
   }
   .tagline-sm { color: var(--gold); font-size: 14px; letter-spacing:.06em; margin-top:12px; display:block; }
+
+  /* before / after compare */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+  }
+  .compare .cmp {
+    border: 1px solid rgba(201,168,76,.35);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 16px 40px rgba(0,0,0,.55);
+    position: relative;
+  }
+  .compare .cmp img {
+    width: 100%;
+    height: auto;
+    max-height: 30vh;
+    object-fit: cover;
+    display: block;
+  }
+  .compare .cmp figcaption {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+  .compare .badge {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 4px;
+    background: rgba(13,17,23,.85); color: var(--muted);
+    border: 1px solid rgba(155,170,184,.35);
+  }
+  .compare .badge.after {
+    color: var(--gold); border-color: rgba(201,168,76,.5);
+    background: rgba(26,36,53,.9);
+  }
+  .compare-arrow {
+    text-align: center; color: var(--gold); font-size: 22px;
+    margin: 6px 0 2px; letter-spacing: .2em;
+  }
 
   /* gallery strip */
   .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
@@ -264,7 +306,6 @@
 <div id="progress"></div>
 <div id="timer">5:00</div>
 <div id="counter"><b id="cur">1</b> / <span id="total">12</span></div>
-<div id="hint">← → za navigaciju · T = timer · F = fullscreen</div>
 
 <div class="nav-zone left"  onclick="prev()"></div>
 <div class="nav-zone right" onclick="next()"></div>
@@ -273,22 +314,27 @@
 
   <!-- 1 · NASLOVNICA -->
   <section class="slide cover active">
-    <div class="bg" style="background-image:url('Cover_art.png')"></div>
+    <div class="bg" style="background-image:url('new assets/Cover_art_logo_ver2.png')"></div>
     <div class="scrim"></div>
     <div class="inner">
-      <h1 class="serif">Nero</h1>
-      <div class="subtitle">Sjene Griča · Whispers of Grič</div>
-      <div class="tag serif">Zagreb, 1599. Grad između Gradeca i Kaptola. U gradu gdje svi traže čudovišta, pravo zlo skriva se među najmoćnijima.</div>
-      <div class="meta">2D Point &amp; Click avantura · Murder Mystery · Game Jam Pitch</div>
+      <div class="tag serif">Zagreb, 18. stoljeće. Grad podijeljen između Gradeca i Kaptola. U gradu gdje svi traže vještice, pravo zlo skriva se među najmoćnijima.</div>
+      <div class="meta">2D Point &amp; Click avantura · Povijesni Murder Mystery</div>
     </div>
   </section>
 
   <!-- 2 · PITCH U JEDNOJ REČENICI -->
-  <section class="slide">
-    <div class="accent-line"></div>
-    <div class="kicker">Pitch u jednoj rečenici</div>
-    <p class="quote serif">Riješi krađu koja je <span class="hl">zapalila grad</span>, istražujući povijesni Zagreb gdje svaki tvoj izbor trajno mijenja priču.</p>
-    <p class="lead" style="margin-top:28px">Bez borbe. Napreduješ <strong>istragom, dijalogom i zagonetkama</strong>. Zaslužuješ svoj kraj, ne biraš ga iz izbornika.</p>
+  <section class="slide two">
+    <div class="col">
+      <div class="accent-line"></div>
+      <p class="quote serif">Igraš <span class="hl">Neru</span> i otkrivaš tko koristi <span class="hl">strah od vještica</span> kao paravan za ubojstva, istražujući povijesni Zagreb gdje svaki tvoj izbor trajno mijenja priču.</p>
+      <p class="lead" style="margin-top:28px">Bez borbe. Napreduješ <strong>istragom, dijalogom i zagonetkama</strong>.</p>
+    </div>
+    <div class="col">
+      <figure class="figure">
+        <img src="new assets/Visual_Nera.png" alt="Nera sa svijećom na mostu nad Zagrebom">
+        <figcaption>Nera · istražiteljica koja nosi svjetlo u mračni grad</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- 3 · POSTAVKA / PRIČA -->
@@ -296,44 +342,52 @@
     <div class="col">
       <div class="accent-line"></div>
       <div class="kicker">Postavka &amp; priča</div>
-      <h2 class="serif">Jedna ukradena ogrlica. Dva zavađena grada.</h2>
+      <h2 class="serif">Žene nestaju. Grad gori. Krivac djeluje iz sjene.</h2>
       <p class="lead">
-        Noć uoči diplomatske predaje dragocjene ogrlice, ona nestaje iz <strong>zaključane, zapečaćene sobe</strong>.
+        Žene optužene za vještičarenje nestaju pod sumnjivim okolnostima. Iste noći, iz <strong>zaključane, zapečaćene sobe</strong> nestaje dragocjena ogrlica - bez znakova provale, uz netaknut pečat.
       </p>
       <p class="lead" style="margin-top:16px">
         <span class="chip g">GRADEC</span> optužuje Kaptol.
         <span class="chip k">KAPTOL</span> optužuje vješticu.
       </p>
       <p class="lead" style="margin-top:16px">
-        Igraš stranca bez korijena, nitko ti ne vjeruje. To je tvoja jedina prednost.
+        Igraš <strong>Neru</strong>, istražiteljicu kojoj nitko ne vjeruje - i to je njezina jedina prednost: nema strane, pa može kopati po obje.
       </p>
     </div>
     <div class="col">
       <figure class="figure">
-        <img src="Game_mockup_1.png" alt="Krvavi most, noć">
-        <figcaption>Krvavi most · Gradec i Kaptol, podijeljeni generacijama</figcaption>
+        <img src="new assets/Visual1-no_necklace.png" alt="Zapečaćena soba, mjesto zločina">
+        <figcaption>Čin I · zapečaćena soba, svijeća i netaknut pečat</figcaption>
       </figure>
     </div>
   </section>
 
   <!-- 4 · ŽANR I KLJUČNE ODREDNICE -->
-  <section class="slide">
-    <div class="accent-line"></div>
-    <div class="kicker">Žanr &amp; iskustvo</div>
-    <h2 class="serif">Klasičan P&amp;C susreće hidden object, u istoj priči</h2>
-    <ul class="feat" style="max-width:70ch">
-      <li><b>Hibridni žanr</b><span>: point &amp; click istraga + ugrađene scene skrivenih predmeta (ne odvojene mini-igre)</span></li>
-      <li><b>Frakcijski sustav</b><span>: Gradec i Kaptol pamte svaki tvoj odabir; pogrešan korak trajno zatvara puteve</span></li>
-      <li><b>Četiri završetka</b><span>: određena dokazima koje prikupiš, a ne klikom na kraju</span></li>
-      <li><b>Autentičan Zagreb</b><span>: stvarne lokacije, povijesni kontekst i hrvatski folklor (Grička vještica)</span></li>
-    </ul>
+  <section class="slide two">
+    <div class="col">
+      <div class="accent-line"></div>
+      <div class="kicker">Žanr &amp; iskustvo</div>
+      <h2 class="serif">Klasičan P&amp;C susreće hidden object, u istoj priči</h2>
+      <ul class="feat">
+        <li><b>Hibridni žanr</b><span>: point &amp; click istraga + ugrađene scene skrivenih predmeta</span></li>
+        <li><b>Frakcijski sustav</b><span>: Gradec i Kaptol pamte svaki tvoj odabir; pogrešan korak trajno zatvara puteve</span></li>
+        <li><b>Četiri završetka</b><span>: od tame do svjetla - određena dokazima koje prikupiš</span></li>
+        <li><b>Autentičan Zagreb</b><span>: stvarne lokacije, povijesni kontekst i hrvatski folklor (Grička vještica)</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <figure class="figure">
+        <img src="new assets/Dolac-pretraga.png" alt="Scena skrivenih predmeta na Dolcu">
+        <figcaption>Scena skrivenih predmeta · pretraga trgovčeve tezge na Dolcu</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- 5 · LIKOVI -->
   <section class="slide two">
     <div class="col">
       <figure class="figure">
-        <img src="Concept_art_1.png" alt="Concept art likova">
+        <img src="new assets/Concept_art_1_ver2.png" alt="Concept art likova">
         <figcaption>Concept art · likovi i ključni predmeti</figcaption>
       </figure>
     </div>
@@ -342,11 +396,11 @@
       <div class="kicker">Likovi</div>
       <h2 class="serif">Svatko nešto skriva</h2>
       <ul class="feat">
-        <li><b>Stranac</b><span>: putujući učenjak, igrač bez frakcije</span></li>
-        <li><b>Grička vještica</b><span>: uvijek govori istinu, ali samo kroz zagonetke</span></li>
-        <li><b>Kanonik</b><span>: metodičan, tiho opasan; čuva pristup kripti</span></li>
-        <li><b>Magistra Dorica</b><span>: najmoćnija žena u Gradecu; alibi prečvrst da bude slučajan</span></li>
+        <li><b>Nera</b><span>: istražiteljica bez korijena i bez frakcije - igrač</span></li>
+        <li><b>Mudra starica s Kaptola</b><span>: uvijek govori istinu, ali samo kroz zagonetke</span></li>
+        <li><b>Redovnik Blaž</b><span>: čuva kaptolski arhiv; savjest razapeta između istine i Crkve</span></li>
         <li><b>Zlatar Juraj</b><span>: knjiga s dva unosa za istu narudžbu…</span></li>
+        <li><b>Knez Drašković</b><span>: plemić iznad obje strane - sjena koja huška grad protiv sebe</span></li>
       </ul>
     </div>
   </section>
@@ -356,17 +410,17 @@
     <div class="col">
       <div class="accent-line"></div>
       <div class="kicker">Svijet</div>
-      <h2 class="serif">Šest lokacija, jedna noć do svitanja</h2>
+      <h2 class="serif">Osam lokacija, jedna istraga do svitanja</h2>
       <p class="lead">
-        Kamenita vrata · Markov trg · Zlatareva radionica · Kaptolska katedrala · Dolac · Krvavi most.
+        Zapečaćena soba · Kamenita vrata · Zlatareva radionica · Kaptolski arhiv · Dolac · Kripta pod Gričem · Soba svijeća · Krvavi most.
       </p>
       <p class="lead" style="margin-top:16px">
-        <strong>Grički top</strong> odbrojava do 06:00: atmosfera, ne pritisak. Što si bliže istini, to je svijet svjetliji.
+        <strong>Grički top</strong> puca u podne - a svaki pucanj izvan podneva najavljuje novu žrtvu. Što si bliže istini, to je svijet svjetliji.
       </p>
     </div>
     <div class="col">
       <figure class="figure">
-        <img src="UI_mockup_5.png" alt="Karta svijeta">
+        <img src="new assets/Karta.png" alt="Karta svijeta">
         <figcaption>Karta svijeta · povijesni Gornji grad</figcaption>
       </figure>
     </div>
@@ -376,8 +430,8 @@
   <section class="slide two">
     <div class="col">
       <figure class="figure">
-        <img src="image (2).png" alt="Grički top puca, nova žrtva">
-        <figcaption>Lotrščakov top nad Gričem · svaki pucanj najavljuje smrt</figcaption>
+        <img src="new assets/Vizual_novi_7.png" alt="Svijeća s urezanim slovom, mjesto zločina">
+        <figcaption>Svijeća na mjestu zločina · prijetnja, trag, pa istina</figcaption>
       </figure>
     </div>
     <div class="col">
@@ -392,61 +446,36 @@
     </div>
   </section>
 
-  <!-- 8 · MEHANIKE / SUČELJE (puni prikaz na hrvatskom) -->
-  <section class="slide showcase">
-    <div class="frame"><img src="image (1).png" alt="Sučelje igre na hrvatskom"></div>
-    <div class="cap">
-      <div class="kicker">Mehanike u akciji</div>
-      <h2 class="serif">Istraga koju vodi sučelje</h2>
-      <p>Mjesto zločina i simbol svijeće · stabla dijaloga (Kapelan Martinović) · Dnevnik Nere koji prati nestale žene · inventar s kombiniranjem predmeta, sve na hrvatskom.</p>
+  <!-- TWIST · IME NA SVIJEĆI -->
+  <section class="slide two">
+    <div class="col">
+      <div class="accent-line"></div>
+      <div class="kicker">Veliki obrat</div>
+      <h2 class="serif">Ime na posljednjoj svijeći</h2>
+      <p class="lead">
+        Svaka svijeća nosi slovo - i nitko ne shvati da to nije potpis žrtve, nego najava <strong>sljedeće</strong>. Tek kad ih Nera posloži, otkriva da je svaka svijeća bila upozorenje koje nitko nije pročitao.
+      </p>
+      <div class="inscription">N - E - R - A</div>
+      <p class="lead" style="margin-top:6px">
+        Po prvi put ime ne pripada žrtvi. Simbol svijeće iz traga se pretvara u <strong>osobnu prijetnju</strong>: Nera je sljedeća meta.
+      </p>
     </div>
-  </section>
-
-  <!-- 8 · SUSTAVI / DODATNA SUČELJA -->
-  <section class="slide">
-    <div class="accent-line"></div>
-    <div class="kicker">Sustavi &amp; sučelje</div>
-    <h2 class="serif">Dubina koja se vidi</h2>
-    <div class="gallery">
-      <img src="UI_mockup_3.png" alt="Frakcije i odnosi">
-      <img src="UI_mockup_6.png" alt="Kodeks lika">
-      <img src="UI_mockup_7.png" alt="Inventar i trgovina">
-    </div>
-    <p class="lead" style="margin-top:20px; max-width:82ch">
-      Frakcije i odnosi koji pamte svaki izbor · kodeks koji veže priču uz pravu povijest · inventar, trgovina i kombiniranje predmeta.
-    </p>
-  </section>
-
-  <!-- ZAGONETKE -->
-  <section class="slide">
-    <div class="accent-line"></div>
-    <div class="kicker">Dizajn zagonetki</div>
-    <h2 class="serif">Zaključak, ne matematika</h2>
-    <p class="lead" style="max-width:84ch; margin-bottom:18px">
-      Zagonetke se rješavaju <strong>promatranjem</strong>: tragovi, karte, dokumenti i simbol svijeće. Igrač razmišlja kao detektiv, ne kao kalkulator.
-    </p>
-    <div class="cards c2">
-      <div class="card">
-        <h3>Svijeće nevinih</h3>
-        <div class="inscription">„Pet je svjedočilo. Tri su lagale.<br>Jedna je vidjela istinu. Pronađi njezin plamen.”</div>
-        <p>Pet svijeća = pet nestalih žena, uz pet poruka. Samo jedna govori istinu, logikom isključiš ostale dok ne ostane <b style="color:var(--text)">Svijeća II</b>. Zapališ je → vosak otkriva urezani simbol <b style="color:var(--text)">sljedećeg ubojstva</b>.</p>
-      </div>
-      <div class="card">
-        <h3>Preklopi grad</h3>
-        <p>Dvije karte Zagreba: na jednoj sva <b style="color:var(--text)">ubojstva</b>, na drugoj sve <b style="color:var(--text)">optužbe za vještičarenje</b>. Ubojstva crtaju <b style="color:var(--gold)">svijeću</b>, optužbe <b style="color:var(--gold)">križ</b>. Kad preklopiš karte, križ pokazuje točnu lokaciju tajne prostorije ispod Griča.</p>
-        <span class="tagline-sm">✦ Detektivski zaključak iz sukoba Gradeca i Kaptola</span>
-      </div>
+    <div class="col">
+      <figure class="figure">
+        <img src="new assets/Vizual_novi_1_NERA.png" alt="Svijeće koje slažu ime NERA">
+        <figcaption>Svijeće slažu ime - N·E·R·A</figcaption>
+      </figure>
     </div>
   </section>
 
   <!-- 9 · GAMEPLAY MOCKUP -->
   <section class="slide imgslide cover">
-    <div class="bg" style="background-image:url('Game_mockup_2.png')"></div>
+    <div class="bg" style="background-image:url('new assets/Visual3.png')"></div>
     <div class="scrim"></div>
     <div class="inner">
-      <div class="kicker">Gameplay</div>
+      <div class="kicker">Gameplay · Čin III</div>
       <h2 class="serif" style="max-width:18ch">„Krvavi most pamti više od krvi. Slušaj kamen.”</h2>
-      <div class="tag serif">Dijalog, portret, izbor i posljedica koja se odmah upisuje u svijet.</div>
+      <div class="tag serif">Zora nad mostom, suočavanje sa sjenama urote. Dijalog, izbor i posljedica koja se odmah upisuje u svijet.</div>
     </div>
   </section>
 
@@ -454,12 +483,12 @@
   <section class="slide">
     <div class="accent-line"></div>
     <div class="kicker">Vrijednost ponovnog igranja</div>
-    <h2 class="serif">Četiri završetka, četiri oblika pravde</h2>
+    <h2 class="serif">Četiri završetka, put od tame do svjetla</h2>
     <div class="cards c2">
-      <div class="card"><h3>Diplomat</h3><p>Ogrlica vraćena tiho, krivac premješten. Grad stabilan, ti omražen od onih koji znaju istinu.</p></div>
-      <div class="card"><h3>Obračun</h3><p>Sve javno otkriveno na mostu. Gradec i Kaptol u sukobu, nevino ime rehabilitirano.</p></div>
-      <div class="card"><h3>Vještičin dogovor</h3><p>Sve tri lance zagonetki dovršene. Ogrlica vraćena grobu, istraga zaključena bez krivca.</p></div>
-      <div class="card"><h3>Tihi odlazak</h3><p>Napustiš Zagreb prije finala. Grad bez tebe, gori malo dalje.</p></div>
+      <div class="card"><h3>Svjetlo istine</h3><p>Cijela mreža javno razotkrivena na mostu. Svijeće se pale jedna po jedna - NERO završava svjetlom.</p></div>
+      <div class="card"><h3>Tiha pravda</h3><p>Drašković tiho smijenjen, optužene žene spašene, mir sačuvan. Grad nikad ne dozna punu istinu.</p></div>
+      <div class="card"><h3>Staričin dogovor</h3><p>Ogrlica vraćena tami sobe svijeća, slučaj zatvoren bez imena krivca - kako je starica tražila.</p></div>
+      <div class="card"><h3>Tama</h3><p>Napustiš Zagreb prije finala. Pod Gričem se pali još jedna svijeća - s urezanim N·E·R·A.</p></div>
     </div>
   </section>
 
@@ -469,7 +498,7 @@
     <div class="kicker">Zašto baš ovo</div>
     <h2 class="serif">Jedinstvena prodajna točka</h2>
     <div class="cards c3">
-      <div class="card"><div class="num">01</div><h3>Prva svoje vrste</h3><p>Jedina P&amp;C avantura smještena u povijesni Zagreb.</p></div>
+      <div class="card"><div class="num">01</div><h3>Prva svoje vrste</h3><p>Jedina P&amp;C avantura smještena u povijesni Zagreb 18. stoljeća.</p></div>
       <div class="card"><div class="num">02</div><h3>Izbori s težinom</h3><p>Frakcije zatvaraju sadržaj: odluke su trajne i bitne.</p></div>
       <div class="card"><div class="num">03</div><h3>Zaslužen kraj</h3><p>Završetak određuju dokazi, ne izbornik. Replayable.</p></div>
     </div>
@@ -483,10 +512,10 @@
       <div class="kicker">Izvedivost</div>
       <h2 class="serif">Tehnologija i plan</h2>
       <ul class="feat">
-        <li><b>Engine</b><span>: Godot 4, 2D, GDScript, Resource-bazirani podaci</span></li>
-        <li><b>Arhitektura</b><span>: autoload singletoni: GameState, Dialogue, Inventory, Faction</span></li>
-        <li><b>Podaci</b><span>: dijalozi i predmeti kao JSON → lako proširivo</span></li>
-        <li><b>Opseg</b><span>: 6 lokacija, ~12–15 ekrana, 3 HO scene, 4–6 h prvog prolaza</span></li>
+        <li><b>Igrivi prototip</b><span>: HTML5 / JavaScript, radi u pregledniku bez instalacije - odigraj odmah</span></li>
+        <li><b>Sadržaj već radi</b><span>: tri čina + epilog, dijalozi, frakcije, inventar s kombiniranjem, zagonetke i HO scene</span></li>
+        <li><b>Produkcija</b><span>: Unity za 3D grad, ZGConnect za stvarne podatke Zagreba (sljedeći slajd)</span></li>
+        <li><b>Skalabilno</b><span>: scenarij i predmeti kao podaci → lako dodavanje lokacija</span></li>
       </ul>
     </div>
     <div class="col">
@@ -497,18 +526,56 @@
     </div>
   </section>
 
+  <!-- 3D GRAD · ZGCONNECT -->
+  <section class="slide two">
+    <div class="col">
+      <div class="compare">
+        <figure class="cmp">
+          <span class="badge">Prije</span>
+          <img src="unity renders/unity_render_cathedral.png" alt="ZGConnect sirova geometrija katedrale">
+          <figcaption>Katedrala · sirovi 3D podaci (ZGConnect)</figcaption>
+        </figure>
+        <figure class="cmp">
+          <span class="badge after">Poslije</span>
+          <img src="unity renders/nero_cathedral.png" alt="Teksturirana katedrala u atmosferi 18. stoljeća">
+          <figcaption>Katedrala · materijali 18. stoljeća</figcaption>
+        </figure>
+        <figure class="cmp">
+          <span class="badge">Prije</span>
+          <img src="unity renders/unity_render_st_mark.png" alt="ZGConnect sirova geometrija crkve sv. Marka">
+          <figcaption>Sv. Marko · sirovi 3D podaci (ZGConnect)</figcaption>
+        </figure>
+        <figure class="cmp">
+          <span class="badge after">Poslije</span>
+          <img src="unity renders/nero_st_mark.png" alt="Teksturirana crkva sv. Marka u atmosferi 18. stoljeća">
+          <figcaption>Sv. Marko · materijali 18. stoljeća</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="col">
+      <div class="accent-line"></div>
+      <div class="kicker">Tehnologija · 3D grad</div>
+      <h2 class="serif">Pravi Zagreb iz gradskih podataka</h2>
+      <ul class="feat">
+        <li><b>ZGConnect plugin</b><span>: učitava službene 3D prostorne podatke grada ravno u Unity. Stvarne zgrade, katedrala i Gornji grad u točnim mjerama.</span></li>
+        <li><b>Povijesna teksturizacija</b><span>: na vjernu geometriju nanosimo materijale 18. stoljeća (kamen, drvo, crijep) i skidamo sve moderno.</span></li>
+        <li><b>Od katastra do kulise</b><span>: 2D scene renderiramo iz 3D modela. Perspektiva, sjene i lokacije ostaju autentične.</span></li>
+      </ul>
+    </div>
+  </section>
+
   <!-- VRIJEDNOST ZA ZAGREB -->
   <section class="slide">
     <div class="accent-line"></div>
     <div class="kicker">Vrijednost za grad</div>
     <h2 class="serif">Zagreb kao glavni lik</h2>
     <p class="lead" style="max-width:84ch; margin-bottom:18px">
-      Nero nije samo igra. To je poziv da se ponovno otkriju stari Zagreb i njegove legende, te da se ljude privuče natrag u srce grada.
+      NERO nije samo igra. To je poziv da se ponovno otkriju stari Zagreb i njegove legende, te da se ljude privuče natrag u srce grada.
     </p>
     <div class="cards c3">
       <div class="card">
         <h3>Folklor oživljen</h3>
-        <p>Grička vještica, Krvavi most, Kamenita vrata i Lotrščakov top: legende ispričane novoj generaciji, na hrvatskom jeziku.</p>
+        <p>Grička vještica, Krvavi most, Kamenita vrata, Lotrščakov top i glagoljski rukopis: legende i baština ispričane novoj generaciji, na hrvatskom jeziku.</p>
       </div>
       <div class="card">
         <h3>Turizam i centar grada</h3>
@@ -516,7 +583,7 @@
       </div>
       <div class="card">
         <h3>Kultura izvan granica</h3>
-        <p>Povijesni Zagreb 1599. kao izvozni proizvod. Engleski prijevod nosi priču i hrvatski identitet svijetu.</p>
+        <p>Povijesni Zagreb 18. stoljeća kao izvozni proizvod. Engleski prijevod nosi priču i hrvatski identitet svijetu.</p>
       </div>
     </div>
     <p class="lead" style="margin-top:22px"><strong>Cilj:</strong> igrač završi igru i poželi prošetati Gričem.</p>
@@ -524,12 +591,12 @@
 
   <!-- ZATVARANJE -->
   <section class="slide cover">
-    <div class="bg" style="background-image:url('Cover_art.png')"></div>
+    <div class="bg" style="background-image:url('image (2).png')"></div>
     <div class="scrim"></div>
     <div class="inner">
       <div class="kicker"><span class="candle">✦</span> NERO završava svjetlom</div>
-      <h1 class="serif">Nero</h1>
-      <div class="tag serif">Svijeća je u početku prijetnja, zatim trag, na kraju istina. Pomozite nam zapaliti prvu.</div>
+      <h1 class="serif">NERO</h1>
+      <div class="tag serif">„NERO” znači tama: mrak ulica, ali i mrak pohlepe, korupcije i straha. Nerin put vodi iz tame prema svjetlu - zato igra završava svjetlom. Pomozite nam zapaliti prvu svijeću.</div>
       <div class="meta">Hvala · Pitanja dobrodošla</div>
     </div>
   </section>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Grička Sjena — Sjena Griča</title>
+<title>NERO - Whispers of Grič</title>
 <style>
   :root{
     --bg:#0D1117;
@@ -15,7 +15,7 @@
     --text2:#9BAAB8;
     --gradec:#4A7FA5;
     --kaptol:#C05050;
-    --marta:#C9A84C;
+    --nera:#4f9b6e;
     --line: rgba(201,168,76,.45);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -37,13 +37,14 @@
   /* ---------- scene ---------- */
   #scene{position:absolute;inset:0;overflow:hidden;
     transition:opacity .5s ease; background:#06080d;}
-  #scene-frame{position:absolute;left:0;width:100%;top:50%;transform:translateY(-50%);}
-  #scene-frame.fill{top:0;transform:none;height:100%;}
-  #scene-img{display:block;width:100%;}
-  #scene-frame.fill #scene-img{width:100%;height:100%;object-fit:cover;object-position:center;}
+  #scene-frame{position:absolute;left:0;width:100%;top:0;height:100%;}
+  #scene-img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;}
   #scene-vignette{position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,.5) 100%),
-    linear-gradient(to bottom, rgba(6,8,13,.95) 0%, rgba(6,8,13,.35) 12%, transparent 26%, transparent 64%, rgba(6,8,13,.55) 82%, rgba(6,8,13,.96) 100%);}
+    linear-gradient(to bottom, rgba(6,8,13,.92) 0%, rgba(6,8,13,.30) 13%, transparent 26%, transparent 62%, rgba(6,8,13,.55) 82%, rgba(6,8,13,.96) 100%);}
+  /* darkness layer that lifts as the case is solved (NERO: from dark to light) */
+  #scene-dark{position:absolute;inset:0;pointer-events:none;background:#05070b;
+    transition:opacity 1.2s ease;}
   .hotspot{position:absolute;cursor:pointer;border:1px solid transparent;border-radius:6px;
     transition:background .2s,border-color .2s;}
   .hotspot:hover{background:rgba(201,168,76,.12);border-color:var(--line);
@@ -58,7 +59,6 @@
   @keyframes pulse{0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,.25),0 0 12px rgba(201,168,76,.18)}
     50%{box-shadow:0 0 0 1px var(--line),0 0 26px rgba(201,168,76,.45)}}
 
-  /* cursor when item selected */
   #stage.using{cursor:crosshair;}
 
   /* ---------- top HUD ---------- */
@@ -66,8 +66,9 @@
     display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px;
     background:linear-gradient(to bottom, rgba(5,7,11,.92), rgba(5,7,11,.0));pointer-events:none;}
   #topbar > *{pointer-events:auto;}
-  #loc-box{max-width:300px;}
+  #loc-box{max-width:320px;}
   #loc-name{font-size:20px;color:var(--gold);letter-spacing:1px;text-shadow:0 1px 4px #000;}
+  #loc-act{font-size:11px;color:var(--nera);letter-spacing:2px;text-transform:uppercase;}
   #loc-quest{font-size:12.5px;color:var(--text2);margin-top:2px;}
   #loc-quest b{color:var(--text);font-weight:normal}
 
@@ -79,13 +80,13 @@
   #timer-cannon{font-size:18px;filter:sepia(1) saturate(2) hue-rotate(-10deg);}
   #timer-val{font-size:22px;color:var(--gold);letter-spacing:3px;font-variant-numeric:tabular-nums;}
 
-  #navbtns{display:flex;gap:6px;}
-  .nav{width:62px;background:rgba(20,28,43,.6);border:1px solid rgba(201,168,76,.25);
-    color:var(--text2);font-size:10px;letter-spacing:1px;text-transform:uppercase;
-    padding:6px 4px 4px;text-align:center;border-radius:3px;transition:all .15s;font-family:inherit;}
-  .nav:hover{color:var(--gold);border-color:var(--line);background:rgba(30,40,60,.85);}
-  .nav .ico{font-size:17px;display:block;margin-bottom:2px;line-height:1;}
-  .nav .key{display:block;font-size:9px;opacity:.6;margin-top:2px;}
+  /* graphical nav bar (new assets/UI_icons.png) with transparent click zones */
+  #navbtns{position:relative;width:360px;height:112px;margin-top:-4px;
+    background:url("new assets/UI_icons.png") no-repeat center/contain;}
+  .navhit{position:absolute;top:6%;height:82%;padding:0;background:transparent;
+    border:0;cursor:pointer;border-radius:10px;transition:background .15s, box-shadow .15s;}
+  .navhit:hover{background:rgba(201,168,76,.16);box-shadow:0 0 16px rgba(201,168,76,.28) inset;}
+  .navhit:active{background:rgba(201,168,76,.26);}
 
   /* ---------- bottom HUD ---------- */
   #bottombar{position:absolute;left:0;right:0;bottom:0;z-index:25;height:118px;
@@ -115,6 +116,10 @@
   .slot.empty:hover{box-shadow:none;border-color:rgba(201,168,76,.08);}
   .slot.sel{border-color:var(--gold);box-shadow:0 0 16px rgba(201,168,76,.55);background:#222c3f;}
   .slot svg{width:38px;height:38px;}
+  /* image icons sliced from new assets/inventory_icons.png into separate files */
+  .inv-img{display:block;object-fit:contain;border-radius:5px;}
+  .slot .inv-img{width:46px;height:46px;}
+  .inv-cell .inv-img{width:64px;height:64px;}
   .slot .qty{position:absolute;right:2px;bottom:1px;font-size:10px;color:var(--gold);
     background:rgba(0,0,0,.6);padding:0 3px;border-radius:2px;}
 
@@ -123,27 +128,25 @@
     padding:0 14px 12px;}
   #dlg-inner{display:flex;gap:0;align-items:stretch;}
   #dlg-portrait-wrap{flex:0 0 150px;position:relative;}
-  #dlg-portrait{width:150px;height:182px;border:1px solid var(--line);border-bottom:none;
-    background:#0a0e16;border-radius:6px 6px 0 0;overflow:hidden;}
-  #dlg-portrait svg{width:100%;height:100%;display:block;}
+  #dlg-portrait{width:150px;height:100%;min-height:120px;border:1px solid var(--line);
+    background:#0a0e16;border-radius:6px 0 0 6px;overflow:hidden;}
+  #dlg-portrait img{width:100%;height:100%;display:block;object-fit:cover;object-position:top center;}
   #dlg-main{flex:1;background:linear-gradient(rgba(30,22,40,.93),rgba(16,12,22,.95));
-    border:1px solid var(--line);border-radius:0 6px 6px 0;padding:14px 18px;min-height:120px;
-    display:flex;flex-direction:column;}
+    border:1px solid var(--line);border-left:none;border-radius:0 6px 6px 0;padding:14px 18px;min-height:120px;
+    display:flex;flex-direction:column;justify-content:center;}
   #dlg-speaker{font-size:16px;letter-spacing:1px;margin-bottom:6px;}
-  #dlg-text{font-style:italic;color:var(--text);font-size:16px;line-height:1.5;flex:1;}
-  #dlg-choices{position:absolute;right:14px;bottom:18px;width:430px;display:flex;flex-direction:column;gap:7px;}
-  .choice{background:linear-gradient(rgba(20,28,43,.92),rgba(13,18,28,.95));
+  #dlg-text{font-style:italic;color:var(--text);font-size:16px;line-height:1.5;}
+  /* choices flow BELOW the text box so they never overlap the dialogue text */
+  #dlg-choices{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+  .choice{background:linear-gradient(rgba(20,28,43,.96),rgba(13,18,28,.98));
     border:1px solid rgba(201,168,76,.3);color:var(--text);padding:10px 12px;font-size:14px;
     text-align:left;border-radius:4px;transition:all .15s;display:flex;gap:10px;align-items:center;}
   .choice:hover{border-color:var(--gold);background:rgba(40,52,74,.95);transform:translateX(-4px);}
   .choice .cnum{color:var(--gold);font-size:13px;border:1px solid var(--line);border-radius:3px;
     width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 22px;}
   .choice .ctag{font-size:11px;color:var(--text2);font-style:italic;margin-left:auto;}
-  #dlg-continue{position:absolute;right:26px;bottom:24px;color:var(--gold);font-size:24px;
-    animation:bob 1.2s infinite;cursor:pointer;}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
-  /* ---------- overlay panels (journal/map/codex/inventory) ---------- */
+  /* ---------- overlay panels ---------- */
   #overlay{position:absolute;inset:0;z-index:60;display:none;background:rgba(5,7,11,.86);
     padding:54px 60px;}
   #overlay-inner{height:100%;border:1px solid var(--line);border-radius:8px;
@@ -170,27 +173,22 @@
   .quest .qd{color:var(--text2);font-size:13.5px;line-height:1.45;}
   .theory{font-size:13.5px;color:var(--text2);padding:5px 0 5px 18px;position:relative;line-height:1.4;}
   .theory:before{content:'◇';position:absolute;left:0;color:var(--gold-dim);}
-  .theory.struck{text-decoration:line-through;opacity:.55;}
   .theory.confirmed{color:var(--text);}
   .theory.confirmed:before{content:'◆';color:var(--gold);}
 
-  /* relationships grid */
   .rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
   .rel-card{text-align:center;}
-  .rel-portrait{width:88px;height:88px;border-radius:50%;margin:0 auto 8px;overflow:hidden;
+  .rel-portrait{width:84px;height:84px;border-radius:50%;margin:0 auto 8px;overflow:hidden;
     border:2px solid var(--line);background:#0a0e16;}
-  .rel-portrait svg{width:100%;height:100%}
-  .rel-name{font-size:15px;color:var(--text);}
+  .rel-portrait img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+  .rel-name{font-size:14px;color:var(--text);}
   .rel-stat{font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
 
-  /* codex list */
   .codex-list .cx{padding:10px 12px;border:1px solid rgba(201,168,76,.2);border-radius:4px;
-    margin-bottom:8px;cursor:pointer;transition:all .15s;}
-  .codex-list .cx:hover{border-color:var(--gold);background:rgba(30,40,60,.5);}
+    margin-bottom:8px;}
   .codex-list .cx .cxt{color:var(--gold);font-size:15px;}
   .codex-list .cx .cxd{color:var(--text2);font-size:12.5px;margin-top:3px;line-height:1.4;}
 
-  /* inventory big */
   .inv-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
   .inv-cell{aspect-ratio:1;background:linear-gradient(#171f2e,#0e131d);
     border:1px solid rgba(201,168,76,.25);border-radius:5px;display:flex;align-items:center;
@@ -204,7 +202,6 @@
   .inv-detail p{color:var(--text2);font-size:14px;line-height:1.5;margin:0 0 12px;}
   .combine-hint{color:var(--gold-dim);font-size:12.5px;font-style:italic;}
 
-  /* map */
   #map-screen{position:relative;height:100%;background-size:cover;background-position:center;
     border-radius:6px;overflow:hidden;}
   .map-node{position:absolute;transform:translate(-50%,-50%);text-align:center;cursor:pointer;}
@@ -216,7 +213,6 @@
   .map-lbl{font-size:12px;color:var(--text);margin-top:4px;text-shadow:0 1px 4px #000,0 0 6px #000;white-space:nowrap;}
   .map-node.locked .map-lbl{color:var(--text2)}
 
-  /* generic buttons */
   .btn{background:linear-gradient(rgba(20,28,43,.95),rgba(13,18,28,.98));
     border:1px solid var(--line);color:var(--text);padding:10px 16px;font-size:14px;
     border-radius:4px;transition:all .15s;letter-spacing:1px;}
@@ -244,88 +240,129 @@
 
   /* ---------- title / menu ---------- */
   #titlescreen{position:absolute;inset:0;z-index:80;background-size:cover;background-position:center;
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:70px;}
-  #titlescreen .tdim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,7,11,.2),rgba(5,7,11,.85));}
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:54px;}
+  #titlescreen .tdim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,7,11,.1),rgba(5,7,11,.4) 60%,rgba(5,7,11,.9));}
   #titlescreen .tcontent{position:relative;text-align:center;}
-  #title-sub{color:var(--text2);letter-spacing:6px;font-size:14px;text-transform:uppercase;margin-bottom:22px;text-shadow:0 2px 8px #000;}
-  .menu-btn{display:block;width:280px;margin:9px auto;background:rgba(13,18,28,.7);
+  #title-sub{color:var(--text2);letter-spacing:6px;font-size:14px;text-transform:uppercase;margin-bottom:20px;text-shadow:0 2px 8px #000;}
+  .menu-btn{display:block;width:300px;margin:9px auto;background:rgba(13,18,28,.72);
     border:1px solid var(--line);color:var(--text);padding:13px;font-size:17px;letter-spacing:2px;
     border-radius:4px;transition:all .2s;}
   .menu-btn:hover{background:rgba(40,30,20,.85);border-color:var(--gold);color:var(--gold);letter-spacing:3px;}
   .menu-btn:disabled{opacity:.4;cursor:not-allowed;}
 
+  /* ---------- act intro cinematic ---------- */
+  #actcard{position:absolute;inset:0;z-index:78;display:none;background:#05070b;
+    background-size:cover;background-position:center;}
+  #actcard .adim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,7,11,.92) 0%,rgba(5,7,11,.55) 45%,rgba(5,7,11,.15) 100%);}
+  #actcard .acontent{position:absolute;left:0;top:0;bottom:0;width:560px;padding:0 60px;
+    display:flex;flex-direction:column;justify-content:center;}
+  #act-kicker{color:var(--nera);letter-spacing:6px;font-size:14px;text-transform:uppercase;margin-bottom:10px;}
+  #act-title{color:var(--gold);font-size:46px;letter-spacing:3px;margin:0 0 18px;line-height:1.05;text-shadow:0 2px 12px #000;}
+  #act-text{color:var(--text);font-size:16.5px;line-height:1.65;font-style:italic;margin-bottom:28px;max-width:460px;}
+  #act-go{align-self:flex-start;}
+
   /* hidden object */
   #ho-screen{position:absolute;inset:0;z-index:45;display:none;background:#05070b;}
   #ho-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
   #ho-list{position:absolute;top:14px;left:14px;z-index:3;background:rgba(10,14,22,.86);
-    border:1px solid var(--line);border-radius:6px;padding:12px 16px;min-width:190px;}
+    border:1px solid var(--line);border-radius:6px;padding:12px 16px;min-width:200px;}
   #ho-list h4{margin:0 0 8px;color:var(--gold);font-size:13px;letter-spacing:2px;text-transform:uppercase;}
   #ho-list .hoi{font-size:14.5px;color:var(--text);padding:3px 0;}
   #ho-list .hoi.found{text-decoration:line-through;color:#5f6d7d;}
   .ho-target{position:absolute;cursor:pointer;z-index:2;}
+  /* subtle "senses" shimmer so clues are findable without being obvious */
+  .ho-target::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;
+    margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(201,168,76,.5),transparent 70%);
+    animation:senses 2.6s ease-in-out infinite;}
+  @keyframes senses{0%,100%{opacity:.08}50%{opacity:.5}}
+  .ho-target.found-x{pointer-events:none;}
+  .ho-target.found-x::after{display:none;}
   .ho-hit{position:absolute;border-radius:50%;border:2px solid var(--gold);
     box-shadow:0 0 20px rgba(201,168,76,.7);animation:found .6s ease;pointer-events:none;}
   @keyframes found{from{transform:scale(2);opacity:0}to{transform:scale(1);opacity:1}}
+  .ho-pulse{position:absolute;border-radius:50%;border:2px solid rgba(201,168,76,.95);
+    box-shadow:0 0 26px rgba(201,168,76,.65);pointer-events:none;z-index:4;animation:hopulse 1.5s ease forwards;}
+  @keyframes hopulse{0%{transform:scale(.3);opacity:0}25%{opacity:1}100%{transform:scale(1.7);opacity:0}}
   #ho-exit{position:absolute;top:14px;right:14px;z-index:3;}
+  #ho-hint{position:absolute;top:14px;right:118px;z-index:3;}
   #ho-feedback{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:3;
-    color:var(--text2);font-size:13px;font-style:italic;}
+    color:var(--text2);font-size:13px;font-style:italic;background:rgba(5,7,11,.6);padding:6px 14px;border-radius:4px;}
 
   /* candle puzzle */
-  .candle-row{display:flex;justify-content:center;gap:26px;margin:18px 0;}
-  .candle{text-align:center;cursor:pointer;width:96px;}
+  .candle-row{display:flex;justify-content:center;gap:22px;margin:18px 0;flex-wrap:wrap;}
+  .candle{text-align:center;cursor:pointer;width:120px;}
   .candle .flame{font-size:34px;height:42px;line-height:42px;filter:grayscale(1) brightness(.5);transition:all .3s;}
   .candle.lit .flame{filter:none;text-shadow:0 0 16px #ffb347;animation:flick 1.5s infinite;}
   @keyframes flick{0%,100%{opacity:1}50%{opacity:.82}}
   .candle .body{width:18px;height:60px;background:linear-gradient(#e8e0c8,#b9ad8a);margin:0 auto;border-radius:3px 3px 0 0;}
   .candle .cnum2{color:var(--gold);margin-top:6px;font-size:14px;}
-  .candle .note{font-size:12px;color:var(--text2);font-style:italic;margin-top:6px;line-height:1.35;min-height:48px;}
+  .candle .note{font-size:12px;color:var(--text2);font-style:italic;margin-top:6px;line-height:1.35;min-height:60px;}
   .candle:hover .body{box-shadow:0 0 14px rgba(201,168,76,.4)}
 
-  .center-narr{max-width:680px;margin:0 auto;text-align:center;}
+  .center-narr{max-width:720px;margin:0 auto;text-align:center;}
   .center-narr p{font-size:16px;line-height:1.7;color:var(--text);font-style:italic;}
 
   /* ending */
   #ending{position:absolute;inset:0;z-index:85;display:none;background:#05070b;
     background-size:cover;background-position:center;}
   #ending .edim{position:absolute;inset:0;background:linear-gradient(rgba(5,7,11,.55),rgba(5,7,11,.92));}
-  #ending .ec{position:relative;max-width:720px;margin:0 auto;padding:80px 30px;text-align:center;}
+  #ending .ec{position:relative;max-width:760px;margin:0 auto;padding:70px 30px;text-align:center;}
   #ending h1{font-size:40px;color:var(--gold);letter-spacing:4px;margin-bottom:8px;}
   #ending .esub{color:var(--text2);letter-spacing:3px;text-transform:uppercase;font-size:13px;margin-bottom:26px;}
   #ending p{font-size:17px;line-height:1.7;color:var(--text);margin-bottom:18px;}
 
   .small{font-size:12px;color:var(--text2)}
   .gold{color:var(--gold)}
+
+  /* ---------- about modal ---------- */
+  #about{position:absolute;inset:0;z-index:95;display:none;align-items:center;justify-content:center;
+    background:rgba(5,7,11,.82);}
+  #about-box{position:relative;width:560px;max-width:88%;max-height:84%;overflow:auto;
+    background:linear-gradient(#16202f,#0c1019);border:1px solid var(--line);border-radius:8px;
+    padding:30px 34px;box-shadow:0 24px 70px rgba(0,0,0,.75);}
+  #about-box .ov-corner{position:absolute;width:22px;height:22px;border:2px solid var(--gold-dim);}
+  #about-box h2{color:var(--gold);font-size:34px;letter-spacing:5px;margin:0 0 2px;text-align:center;}
+  #about-box .asub{color:var(--nera);letter-spacing:3px;text-transform:uppercase;font-size:12px;text-align:center;margin-bottom:18px;}
+  #about-box p{color:var(--text);font-size:14.5px;line-height:1.6;margin:0 0 12px;}
+  #about-box p.lead{font-style:italic;color:var(--text2);}
+  #about-box .ah{color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-size:11px;margin:18px 0 6px;}
+  #about-box ul{margin:0 0 8px;padding-left:18px;color:var(--text2);font-size:13.5px;line-height:1.7;}
+  #about-box ul b{color:var(--text);}
+  #about-close{display:block;margin:20px auto 0;}
 </style>
 </head>
 <body>
 <div id="stage-wrap">
   <div id="stage">
-    <div id="scene"><div id="scene-frame"><img id="scene-img" alt=""></div></div>
+    <div id="scene"><div id="scene-frame"><img id="scene-img" alt=""></div><div id="scene-dark"></div></div>
     <div id="scene-vignette"></div>
 
     <!-- TOP HUD -->
     <div id="topbar">
-      <div id="loc-box" class="">
-        <div id="loc-name">—</div>
+      <div id="loc-box">
+        <div id="loc-act"></div>
+        <div id="loc-name">-</div>
         <div id="loc-quest"></div>
       </div>
       <div id="timer-box">
         <div id="timer-label">Grički top puca za</div>
-        <div id="timer-row"><span id="timer-cannon">🜲</span><span id="timer-val">06:00</span></div>
+        <div id="timer-row"><span id="timer-cannon">🜲</span><span id="timer-val">12:00</span></div>
       </div>
       <div id="navbtns">
-        <button class="nav" data-panel="journal"><span class="ico">📖</span>Dnevnik<span class="key">J</span></button>
-        <button class="nav" data-panel="map"><span class="ico">🗺️</span>Karta<span class="key">M</span></button>
-        <button class="nav" data-panel="inventory"><span class="ico">🎒</span>Inventar<span class="key">I</span></button>
-        <button class="nav" data-panel="codex"><span class="ico">📜</span>Kodeks<span class="key">K</span></button>
-        <button class="nav" data-panel="menu"><span class="ico">⚙</span>Izbornik<span class="key">Esc</span></button>
+        <button class="navhit" id="btn-hint"       title="Savjet (H)"     style="left:2%;width:14%"></button>
+        <button class="navhit" data-panel="journal"  title="Dnevnik (J)"  style="left:16.5%;width:14.5%"></button>
+        <button class="navhit" data-panel="map"      title="Karta (M)"    style="left:34.5%;width:15.5%"></button>
+        <button class="navhit" data-panel="inventory" title="Inventar (I)" style="left:50.5%;width:15.5%"></button>
+        <button class="navhit" data-panel="codex"    title="Kodeks (K)"    style="left:68.5%;width:15.5%"></button>
+        <button class="navhit" data-panel="menu"     title="Izbornik (Esc)" style="left:84.5%;width:14%"></button>
       </div>
     </div>
 
     <!-- BOTTOM HUD -->
     <div id="bottombar">
       <div id="faction-panel" class="hud-panel">
-        <div class="hud-title">Položaj kod frakcija</div>
+        <div class="hud-title">Povjerenje frakcija</div>
         <div class="fac-row">
           <svg class="fac-crest" id="crest-gradec" viewBox="0 0 26 30"></svg>
           <div class="fac-mid">
@@ -360,7 +397,6 @@
         </div>
       </div>
       <div id="dlg-choices"></div>
-      <div id="dlg-continue" style="display:none">▸</div>
     </div>
 
     <!-- OVERLAY PANELS -->
@@ -384,7 +420,8 @@
     <!-- HIDDEN OBJECT -->
     <div id="ho-screen">
       <div id="ho-bg"></div>
-      <div id="ho-list"><h4>Pronađi</h4><div id="ho-items"></div></div>
+      <div id="ho-list"><h4>Pronađi tragove</h4><div id="ho-items"></div></div>
+      <button class="btn gold" id="ho-hint">🧭 Kompas</button>
       <button class="btn" id="ho-exit">Odustani</button>
       <div id="ho-feedback"></div>
     </div>
@@ -392,16 +429,49 @@
     <!-- TOASTS -->
     <div id="toast-wrap"></div>
 
+    <!-- ACT INTRO -->
+    <div id="actcard">
+      <div class="adim"></div>
+      <div class="acontent">
+        <div id="act-kicker"></div>
+        <h1 id="act-title"></h1>
+        <div id="act-text"></div>
+        <button class="btn gold" id="act-go" style="font-size:16px;padding:12px 26px">Nastavi ▸</button>
+      </div>
+    </div>
+
     <!-- TITLE -->
     <div id="titlescreen">
       <div class="tdim"></div>
       <div class="tcontent">
-        <div id="title-sub">Sjena Griča · Zagreb 1599.</div>
         <button class="menu-btn" id="btn-new">Nova igra</button>
         <button class="menu-btn" id="btn-continue">Nastavi</button>
         <button class="menu-btn" id="btn-about">O igri</button>
       </div>
     </div>
+
+    <!-- ABOUT -->
+    <div id="about"><div id="about-box">
+      <span class="ov-corner c-tl"></span><span class="ov-corner c-tr"></span>
+      <span class="ov-corner c-bl"></span><span class="ov-corner c-br"></span>
+      <h2>NERO</h2>
+      <div class="asub">Whispers of Grič</div>
+      <p class="lead">Povijesni murder mystery smješten u Zagreb 18. stoljeća, u podijeljeni grad između Gradeca i Kaptola.</p>
+      <p>Igraš Neru, istražiteljicu bez korijena i bez frakcijske strane. Žene optužene za vještičarenje nestaju, a netko koristi strah od vještica kao paravan za niz ubojstava. Sukob Gradeca i Kaptola samo je dimna zavjesa.</p>
+      <p>Simbol svijeće vodi te kroz tamu: isprva prijetnja, zatim trag, naposljetku istina. NERO znači tama, a put vodi prema svjetlu. Zato igra završava svjetlom.</p>
+      <div class="ah">Kako se igra</div>
+      <ul>
+        <li><b>Istraži</b> mjesta zločina klikom na osvijetljene točke.</li>
+        <li><b>Razgovaraj</b> s likovima i biraj odgovore (tipke 1 do 4).</li>
+        <li><b>Spajaj predmete</b> u inventaru da otključaš nove tragove.</li>
+        <li><b>Putuj</b> preko karte, rješavaj zagonetke, donesi odluku na Krvavom mostu.</li>
+      </ul>
+      <div class="ah">Tipke</div>
+      <ul>
+        <li>J Dnevnik, M Karta, I Inventar, K Kodeks, Esc Izbornik</li>
+      </ul>
+      <button class="btn gold" id="about-close">Zatvori</button>
+    </div></div>
 
     <!-- ENDING -->
     <div id="ending"><div class="edim"></div><div class="ec">
@@ -415,497 +485,460 @@
 
 <script>
 /* =====================================================================
-   GRIČKA SJENA  —  single-file point & click engine
+   NERO - WHISPERS OF GRIČ   ·  single-file point & click engine
+   Protagonist: Nera, investigator.  Witch trials as a cover for murder.
+   Symbol: the candle (threat → clue → truth).  NERO = darkness → light.
    ===================================================================== */
 "use strict";
 
-/* ---------- asset paths (cropped from provided art, in /assets) ---------- */
+/* ---------- asset paths ---------- */
+const NA = "new assets/";
+const OA = "assets/";
 const IMG = {
-  cover:   "Cover_art.png",
-  bridge:  "assets/bg_bridge.png",   // Krvavi most (clean strip from Game_mockup_1)
-  alley:   "assets/bg_alley.png",    // Kamenita vrata alley + witch (Game_mockup_2)
-  kaptol:  "assets/bg_kaptol.png",   // Kaptol gate + monk (Game_mockup_3)
-  square:  "assets/bg_square.png",   // Markov trg — St. Mark's church at night (3.png)
-  workshop:"assets/bg_workshop.png", // jeweler's workbench, candlelit (3.png)
-  shrine:  "assets/bg_shrine.png",   // gothic cathedral interior + rose window (1.png)
-  crypt:   "assets/bg_crypt.png",    // vaulted stone crypt + shrine (3.png)
-  worldmap:"UI_mockup_5.png",        // illustrated map
-  nero:    "assets/bg_nero.png"      // epic candle cityscape (finale)
+  cover:        NA+"Cover_art_logo_ver2.png",
+  cover_nologo: NA+"Cover_art_nologo_ver2.png",
+  hero:         NA+"Visual_Nera.png",
+  map:          NA+"Karta.png",
+
+  // scenes
+  chamber:      NA+"Visual1.png",          // ACT I sealed chamber (necklace still in box, used on the act card)
+  chamber_empty:NA+"Visual1-no_necklace.png", // ACT I crime scene: the box is empty, the necklace is gone
+  alley:        NA+"Visual4.png",          // Nera + witch at shrine niche (Kamenita vrata)
+  alley_fog:    NA+"Visual_novi_3.png",    // foggy lantern street toward cathedral
+  archive:      NA+"Visual2.png",          // ACT II archive: ledger + map by candlelight
+  archive_canon:NA+"Vizual_novi_4.png",    // archive with the canon at the map
+  archive_twist:NA+"Vizual_novi_2.png",    // hooded figure lighting the NERA candle
+  crypt:        NA+"Vizual_novi_5.png",    // crypt corridor with lantern
+  candle_room:  NA+"Vizual_novi_6.png",    // shrine of candles (victims)
+  candle_clue:  NA+"Vizual_novi_7.png",    // single candle, carved N, blood
+  nera_candles: NA+"Vizual_novi_1_NERA.png",// candles spelling NERA + journal
+  bridge:       NA+"Visual3.png",          // ACT III Bloody Bridge at dawn
+
+  // reused old backgrounds where no new art exists
+  workshop:     NA+"workshop.png",
+  workshop_top: NA+"workshop-top_down.png",
+  market:       NA+"dolac.png",
+  market_night: NA+"Dolac-no_merchant.png",
+  market_search:NA+"Dolac-pretraga.png"
 };
 
-/* =====================================================================
-   ART  (real images for scenes/portraits; SVG only for tiny item icons + crests)
-   ===================================================================== */
-
-/* --- interior backgrounds (cropped from provided art) --- */
-const BG = {
-  workshop:      IMG.workshop,            // jeweler's workbench (candlelit)
-  crypt:         IMG.crypt,               // vaulted stone crypt + shrine
-  crypt_candles: IMG.nero,                // candle cityscape (finale variant)
-  dorotea:       "assets/bg_archive.png", // sealed archive / library
-  dolac:         "assets/bg_market.png",  // night market street
-  kaptol_int:    IMG.shrine               // gothic cathedral interior + rose window
-};
-/* --- item icons (svg strings) --- */
-const ICON = {
-  intro_letter:`<svg viewBox='0 0 40 40'><rect x='5' y='9' width='30' height='22' rx='2' fill='#d8cba6' stroke='#b09a5e'/><path d='M5 9 L20 22 L35 9' fill='none' stroke='#8a7440' stroke-width='1.6'/><circle cx='30' cy='27' r='4' fill='#9c3b3b'/></svg>`,
-  iron_key:`<svg viewBox='0 0 40 40'><circle cx='13' cy='14' r='7' fill='none' stroke='#c9a84c' stroke-width='3'/><rect x='17' y='17' width='15' height='3.5' transform='rotate(45 17 17)' fill='#c9a84c'/><rect x='27' y='27' width='6' height='3' fill='#c9a84c'/><rect x='24' y='24' width='6' height='3' fill='#c9a84c'/></svg>`,
-  kaptol_blueprint:`<svg viewBox='0 0 40 40'><rect x='6' y='8' width='28' height='24' rx='1' fill='#1d2f44' stroke='#4A7FA5'/><g stroke='#7fb0d6' stroke-width='1' opacity='.8'><rect x='11' y='13' width='8' height='14'/><rect x='21' y='13' width='8' height='8'/><line x1='6' y1='20' x2='34' y2='20'/></g></svg>`,
-  second_key:`<svg viewBox='0 0 40 40'><circle cx='12' cy='13' r='6.5' fill='none' stroke='#e0c468' stroke-width='3'/><circle cx='28' cy='13' r='6.5' fill='none' stroke='#e0c468' stroke-width='3'/><rect x='15' y='18' width='14' height='3.5' transform='rotate(45 15 18)' fill='#e0c468'/><rect x='25' y='26' width='6' height='3' fill='#e0c468'/></svg>`,
-  blank_parchment:`<svg viewBox='0 0 40 40'><path d='M9 7 h22 v26 h-22 z' fill='#ddd0ab' stroke='#a8915a'/><path d='M9 7 q-3 13 0 26' fill='none' stroke='#a8915a'/><line x1='14' y1='14' x2='28' y2='14' stroke='#bfa86e'/><line x1='14' y1='20' x2='28' y2='20' stroke='#bfa86e'/></svg>`,
-  wax_seal:`<svg viewBox='0 0 40 40'><circle cx='20' cy='20' r='12' fill='#9c3b3b' stroke='#6e2828' stroke-width='2'/><circle cx='20' cy='20' r='7' fill='none' stroke='#c96a6a' stroke-width='1.4'/><path d='M20 14 l2 5 5 0 -4 3 1.5 5 -4.5 -3 -4.5 3 1.5 -5 -4 -3 5 0z' fill='#c96a6a'/></svg>`,
-  copied_letter:`<svg viewBox='0 0 40 40'><rect x='7' y='7' width='26' height='26' rx='1' fill='#d8cba6' stroke='#b09a5e'/><line x1='12' y1='14' x2='28' y2='14' stroke='#7a6638'/><line x1='12' y1='19' x2='28' y2='19' stroke='#7a6638'/><line x1='12' y1='24' x2='22' y2='24' stroke='#7a6638'/><circle cx='27' cy='28' r='4' fill='#9c3b3b'/></svg>`,
-  city_coin:`<svg viewBox='0 0 40 40'><circle cx='20' cy='20' r='13' fill='#c9a84c' stroke='#8c7531' stroke-width='2'/><circle cx='20' cy='20' r='9' fill='none' stroke='#8c7531'/><path d='M20 12 l9 16 -18 0z' fill='#a8893a' opacity='.6'/></svg>`,
-  guard_badge:`<svg viewBox='0 0 40 40'><path d='M20 5 L33 11 V21 Q33 31 20 35 Q7 31 7 21 V11Z' fill='#3a4658' stroke='#c9a84c' stroke-width='1.6'/><path d='M20 13 l2.5 5 5.5 .5 -4 4 1 5.5 -5-3 -5 3 1-5.5 -4-4 5.5-.5z' fill='#c9a84c'/></svg>`,
-  second_ledger:`<svg viewBox='0 0 40 40'><rect x='8' y='6' width='24' height='28' rx='2' fill='#5a3a22' stroke='#3a2613'/><rect x='8' y='6' width='6' height='28' fill='#3a2613'/><line x1='18' y1='13' x2='29' y2='13' stroke='#c9a84c' opacity='.7'/><line x1='18' y1='19' x2='29' y2='19' stroke='#c9a84c' opacity='.5'/><line x1='18' y1='25' x2='29' y2='25' stroke='#c9a84c' opacity='.5'/></svg>`,
-  miniature:`<svg viewBox='0 0 40 40'><ellipse cx='20' cy='20' rx='11' ry='14' fill='#2a2238' stroke='#c9a84c' stroke-width='2'/><ellipse cx='20' cy='17' rx='5' ry='6' fill='#caa988'/><path d='M14 30 q6 -8 12 0z' fill='#6a5a48'/></svg>`,
-  false_necklace:`<svg viewBox='0 0 40 40'><path d='M10 10 Q20 24 30 10' fill='none' stroke='#c9a84c' stroke-width='2'/><circle cx='20' cy='24' r='6' fill='#7a2f6a' stroke='#c9a84c' stroke-width='1.6'/><circle cx='20' cy='24' r='2.5' fill='#d98ec9'/></svg>`,
-  necklace_real:`<svg viewBox='0 0 40 40'><path d='M9 9 Q20 26 31 9' fill='none' stroke='#e0c468' stroke-width='2.4'/><path d='M20 22 l4 7 -8 0z' fill='#3aa0c0' stroke='#e0c468'/><circle cx='20' cy='20' r='3' fill='#7fe0ff'/></svg>`
-};
-
-/* --- crests --- */
-document.getElementById('crest-gradec').innerHTML =
-  `<path d='M2 4 L13 1 L24 4 V20 Q24 27 13 29 Q2 27 2 20Z' fill='#1d2f44' stroke='#4A7FA5' stroke-width='1.4'/>
-   <rect x='8' y='8' width='4' height='9' fill='#4A7FA5'/><rect x='14' y='8' width='4' height='9' fill='#4A7FA5'/>
-   <rect x='6' y='5' width='14' height='3' fill='#4A7FA5'/>`;
-document.getElementById('crest-kaptol').innerHTML =
-  `<path d='M2 4 L13 1 L24 4 V20 Q24 27 13 29 Q2 27 2 20Z' fill='#3a1d1d' stroke='#C05050' stroke-width='1.4'/>
-   <rect x='11' y='6' width='3' height='16' fill='#C05050'/><rect x='7' y='10' width='11' height='3' fill='#C05050'/>
-   <path d='M8 20 L13 14 L18 20Z' fill='#C05050'/>`;
-
-/* =====================================================================
-   GAME DATA
-   ===================================================================== */
-const ITEMS = {
-  intro_letter:{name:"Preporuka pismo",icon:ICON.intro_letter,
-    desc:"Pismo preporuke koje otvara vrata kod obje frakcije. Tvoja jedina iskaznica u ovom gradu."},
-  iron_key:{name:"Željezni ključ",icon:ICON.iron_key,
-    desc:"Stari ključ. Netko ga je ostavio iza svetišne niše kraj Kamenitih vrata."},
-  kaptol_blueprint:{name:"Kaptolski tlocrt",icon:ICON.kaptol_blueprint,
-    desc:"Nacrt katedrale s tankom, jedva vidljivom linijom koja vodi iza glavnog oltara."},
-  second_key:{name:"Drugi ključ",icon:ICON.second_key,
-    desc:"Ključ skovan po tlocrtu. Dvije bradice — za dvije brave kripte."},
-  blank_parchment:{name:"Prazan pergament",icon:ICON.blank_parchment,
-    desc:"Skup, gladak pergament. Kupljen na Dolcu. Spreman da primi tuđu istinu."},
-  wax_seal:{name:"Voštani pečat",icon:ICON.wax_seal,
-    desc:"Pečat s kaptolskim grbom. Pronađen u zlatarevoj radionici — što radi ondje?"},
-  copied_letter:{name:"Kopirano pismo",icon:ICON.copied_letter,
-    desc:"Krivotvoreno pismo s kaptolskim pečatom. Opasno oružje ako se pokaže pravoj osobi."},
-  city_coin:{name:"Gradski novčić",icon:ICON.city_coin,
-    desc:"Gradečki novčić od Magistre Dorice. Ne za kupovinu — za otvaranje usta."},
-  guard_badge:{name:"Stražarska značka",icon:ICON.guard_badge,
-    desc:"Značka mostarskog stražara, izgubljena na noćnom Dolcu. Na poleđini ugravirano: M.R."},
-  second_ledger:{name:"Drugi ledger",icon:ICON.second_ledger,
-    desc:"Zlatareva druga knjiga. Ista narudžba upisana dvaput — s dvije različite cijene."},
-  miniature:{name:"Minijaturni portret",icon:ICON.miniature,
-    desc:"Sitni portret Dorotee Kovačić. Na poleđini: 'Onoj koja je vidjela. 1572.'"},
-  false_necklace:{name:"Lažna ogrlica",icon:ICON.false_necklace,
-    desc:"Vješta kopija nestale ogrlice. Staklo umjesto kamena. Netko je htio da se ovo nađe."},
-  necklace_real:{name:"Prava ogrlica",icon:ICON.necklace_real,
-    desc:"Ogrlica Dorotee Kovačić. Hladna, teška, stvarna. Tri stoljeća tišine u jednom kamenu."}
-};
-
+/* ---------- portraits ---------- */
 const PORTRAITS = {
-  player:   "assets/p_player.png",
-  marta:    "assets/p_marta.png",
-  stjepan:  "assets/p_stjepan.png",
-  dorica:   "assets/p_dorica.png",
-  juraj:    "assets/p_juraj.png",
-  blaz:     "assets/p_blaz.png",
-  guard:    "assets/p_guard.png"
+  nera:     NA+"NeraAvatar.png",
+  vjestica: NA+"NPC3.png",
+  juraj:    NA+"NPC1.png",
+  blaz:     NA+"NPC4.png",
+  draskovic:NA+"SinisaAvatar.png",
+  enforcer: NA+"NPC5.png"
 };
 
 const SPEAKERS = {
-  player:{name:"Stranac",color:"#9BAAB8",portrait:PORTRAITS.player},
-  marta:{name:"Grička Vještica",color:"#C9A84C",portrait:PORTRAITS.marta},
-  stjepan:{name:"Kanonik Stjepan",color:"#C05050",portrait:PORTRAITS.stjepan},
-  dorica:{name:"Magistra Dorica",color:"#4A7FA5",portrait:PORTRAITS.dorica},
-  juraj:{name:"Zlatar Juraj",color:"#C9A84C",portrait:PORTRAITS.juraj},
-  blaz:{name:"Blaž, redovnik",color:"#C05050",portrait:PORTRAITS.blaz},
-  guard:{name:"Stražar Mato",color:"#9BAAB8",portrait:PORTRAITS.guard}
+  nera:    {name:"Nera",                color:"#4f9b6e", portrait:PORTRAITS.nera},
+  vjestica:{name:"Mudra starica",       color:"#C9A84C", portrait:PORTRAITS.vjestica},
+  juraj:   {name:"Zlatar Juraj",        color:"#C9A84C", portrait:PORTRAITS.juraj},
+  blaz:    {name:"Redovnik Blaž",       color:"#C05050", portrait:PORTRAITS.blaz},
+  draskovic:{name:"Knez Drašković",     color:"#C05050", portrait:PORTRAITS.draskovic},
+  enforcer:{name:"Crveni vitez",        color:"#C05050", portrait:PORTRAITS.enforcer}
 };
 
-/* ---------------------------------------------------------------------
+/* ---------- item icons (svg) ---------- */
+const ICON = {
+  compass:`<img class='inv-img' src='new assets/inv_compass.png' alt=''>`,
+  candle_wax:`<img class='inv-img' src='new assets/inv_candle.png' alt=''>`,
+  ledger:`<img class='inv-img' src='new assets/inv_ledger.png' alt=''>`,
+  wax_seal:`<img class='inv-img' src='new assets/inv_seal.png' alt=''>`,
+  blank_parchment:`<img class='inv-img' src='new assets/inv_parchment.png' alt=''>`,
+  forged_letter:`<svg viewBox='0 0 40 40'><rect x='7' y='7' width='26' height='26' rx='1' fill='#d8cba6' stroke='#b09a5e'/><line x1='12' y1='14' x2='28' y2='14' stroke='#7a6638'/><line x1='12' y1='19' x2='28' y2='19' stroke='#7a6638'/><line x1='12' y1='24' x2='22' y2='24' stroke='#7a6638'/><circle cx='27' cy='28' r='4' fill='#9c3b3b'/></svg>`,
+  glagol_manuscript:`<img class='inv-img' src='new assets/inv_glagol.png' alt=''>`,
+  crypt_key:`<svg viewBox='0 0 40 40'><circle cx='12' cy='13' r='6.5' fill='none' stroke='#e0c468' stroke-width='3'/><rect x='15' y='18' width='14' height='3.5' transform='rotate(45 15 18)' fill='#e0c468'/><rect x='25' y='26' width='6' height='3' fill='#e0c468'/><rect x='22' y='23' width='6' height='3' fill='#e0c468'/></svg>`,
+  city_coin:`<img class='inv-img' src='new assets/inv_coin.png' alt=''>`,
+  locket:`<img class='inv-img' src='new assets/inv_locket.png' alt=''>`,
+  necklace_real:`<svg viewBox='0 0 40 40'><path d='M9 9 Q20 26 31 9' fill='none' stroke='#e0c468' stroke-width='2.4'/><path d='M20 22 l4 7 -8 0z' fill='#3aa0c0' stroke='#e0c468'/><circle cx='20' cy='20' r='3' fill='#7fe0ff'/></svg>`,
+  necklace_fake:`<img class='inv-img' src='new assets/inv_neckfake.png' alt=''>`,
+  letter_intro:`<img class='inv-img' src='new assets/inv_letter.png' alt=''>`
+};
+
+const ITEMS = {
+  letter_intro:{name:"Nalog za istragu",icon:ICON.letter_intro,
+    desc:"Nalog koji ti daje pristup mjestu zločina na obje strane grada. Nitko ti ne vjeruje - i to je tvoja jedina prednost."},
+  compass:{name:"Mjedeni kompas",icon:ICON.compass,
+    desc:"Dar Mudre starice s Kaptola. Igla ne pokazuje sjever, nego - kako kaže - 'put iz tame'. Svaki put kad si izgubljena, vrati joj se."},
+  candle_wax:{name:"Uzorak voska",icon:ICON.candle_wax,
+    desc:"Vosak svijeće s mjesta zločina. Svijeća je gorjela iznutra, u zaključanoj sobi. Tko ju je zapalio?"},
+  ledger:{name:"Zlatareva knjiga",icon:ICON.ledger,
+    desc:"Cehovska knjiga zlatara Juraja. Ista narudžba upisana je dvaput - s dvije cijene. Netko je platio za kopiju ogrlice."},
+  wax_seal:{name:"Voštani pečat",icon:ICON.wax_seal,
+    desc:"Pečat s kaptolskim grbom, pronađen ondje gdje mu nije mjesto. Oružje za onoga tko zna kako se njime služi."},
+  blank_parchment:{name:"Prazan pergament",icon:ICON.blank_parchment,
+    desc:"Gladak, skup pergament s Dolca. Prazan list spreman da primi tuđu laž - ili istinu."},
+  forged_letter:{name:"Krivotvoreno pismo",icon:ICON.forged_letter,
+    desc:"Pismo s kaptolskim pečatom koje nikad nije napisao Kaptol. Dokaz da netko huška grad protiv samog sebe."},
+  glagol_manuscript:{name:"Glagoljski rukopis",icon:ICON.glagol_manuscript,
+    desc:"Stari samostanski rukopis. Ključ za čitanje znakova urezanih u svijeće žrtava."},
+  crypt_key:{name:"Ključ kripte",icon:ICON.crypt_key,
+    desc:"Teški ključ s dvije bradice. Otvara skrivenu prostoriju ispod Griča - sobu svijeća."},
+  city_coin:{name:"Gradski novčić",icon:ICON.city_coin,
+    desc:"Gradečki novčić. Ne za kupovinu - za jezik. Pokaži ga pravom čovjeku na mostu i potvrdit će se tko kupuje šutnju u ovom gradu."},
+  locket:{name:"Slomljeni medaljon",icon:ICON.locket,
+    desc:"Medaljon nestale Dore Krupić. Unutra sitni portret i datum. Posljednja je vidjela previše."},
+  necklace_fake:{name:"Lažna ogrlica",icon:ICON.necklace_fake,
+    desc:"Vješta kopija. Staklo umjesto kamena. Netko je htio da se baš ovo 'pronađe' i okrivi drugu stranu."},
+  necklace_real:{name:"Prava ogrlica",icon:ICON.necklace_real,
+    desc:"Ogrlica koja nikad nije napustila grad. Hladna, teška, stvarna - i dovoljan razlog za četiri smrti."}
+};
+
+/* ---------- crests ---------- */
+function setCrests(){
+  document.getElementById('crest-gradec').innerHTML =
+    `<path d='M2 4 L13 1 L24 4 V20 Q24 27 13 29 Q2 27 2 20Z' fill='#1d2f44' stroke='#4A7FA5' stroke-width='1.4'/>
+     <rect x='8' y='8' width='4' height='9' fill='#4A7FA5'/><rect x='14' y='8' width='4' height='9' fill='#4A7FA5'/>
+     <rect x='6' y='5' width='14' height='3' fill='#4A7FA5'/>`;
+  document.getElementById('crest-kaptol').innerHTML =
+    `<path d='M2 4 L13 1 L24 4 V20 Q24 27 13 29 Q2 27 2 20Z' fill='#3a1d1d' stroke='#C05050' stroke-width='1.4'/>
+     <rect x='11' y='6' width='3' height='16' fill='#C05050'/><rect x='7' y='10' width='11' height='3' fill='#C05050'/>
+     <path d='M8 20 L13 14 L18 20Z' fill='#C05050'/>`;
+}
+
+/* =====================================================================
+   ACT CARDS
+   ===================================================================== */
+const ACTS = {
+  1:{kicker:"Čin I",title:"Nestanak",bg:IMG.chamber,
+     text:"Noć uoči diplomatske predaje. Iz zaključane, zapečaćene sobe nestaje dragocjena ogrlica - bez znakova provale, s netaknutim voštanim pečatom na vratima. Na stolu gori jedna jedina svijeća. Vani, podijeljeni grad pokazuje prstom u svakom smjeru. Nera dobiva pristup istrazi."},
+  2:{kicker:"Čin II",title:"Istraga",bg:IMG.archive,
+     text:"Svako ispitivanje otvara novo proturječje: zlatareva knjiga s dva unosa, sumnjivi zapisi u kaptolskom arhivu, nakit koji se prodaje na Dolcu. Vještica zna više nego što govori - ali progovara tek kad joj pokažeš pravi predmet. Pod Gričem čeka soba puna svijeća."},
+  3:{kicker:"Čin III",title:"Obračun",bg:IMG.bridge,
+     text:"Zora nad Krvavim mostom, na granici Gradeca i Kaptola. Nera dolazi s onim što je prikupila i suočava se sa sjenama urote. Kraj ovisi o dokazima, o tome kome je vjerovala - i o tome što je odlučila zadržati za sebe."},
+  4:{kicker:"Epilog",title:"NERA",bg:IMG.nera_candles,
+     text:"Na posljednjoj svijeći ime ne pripada žrtvi. N - E - R - A. Po prvi put simbol se iz traga pretvara u osobnu prijetnju. Nera shvaća da je ona sljedeća meta."}
+};
+
+/* =====================================================================
    SCENES
-   --------------------------------------------------------------------- */
+   ===================================================================== */
 const SCENES = {
-  kamenita_vrata:{
-    name:"Kamenita vrata",
-    bg:IMG.alley, mode:"band", bandY:34,
-    quest:()=> G.flags.talked_marta ? "Pretraži svetišnu nišu." : "Razgovaraj s tajanstvenom ženom.",
-    desc:"Rano jutro. Kameni svod Kamenitih vrata zaklanja blijedo svjetlo. U niši treperi svijeća koja, kažu, nikad ne dogori.",
+  crime_scene:{
+    name:"Zapečaćena soba", act:"Čin I - Nestanak", bg:IMG.chamber_empty,
+    quest:()=> G.flags.crime_done ? "Izađi na ulicu kroz vrata i potraži Mudru staricu kraj Kamenitih vrata." : "Pregledaj mjesto zločina, pa izađi na vrata kad budeš spremna.",
+    desc:"Soba zapečaćena iznutra. Teška vrata netaknuta, pečat cijel, a ogrlice nema. Na stolu gori svijeća koju nitko nije smio zapaliti. Kroz otvorena vrata na ulicu vidiš kako se Gradec i Kaptol već sukobljavaju.",
     hotspots:[
-      {id:"marta",x:24,y:52,w:18,h:48,label:"Tajanstvena žena",type:"dialogue",dialogue:"marta_intro"},
-      {id:"shrine",x:0,y:12,w:22,h:88,label:"Svetišna niša",glow:()=>G.flags.talked_marta&&!G.flags.took_iron_key,
-        action(){
-          if(!G.flags.talked_marta){ examine("Svetišna niša","Svijeća gori bez kraja. Žena pokraj tebe motri te. Možda bi prvo trebao s njom progovoriti."); return; }
-          if(G.flags.took_iron_key){ examine("Svetišna niša","Prazno udubljenje u kamenu, gdje je ležao ključ."); return; }
-          addItem("iron_key"); G.flags.took_iron_key=true;
-          examine("Svetišna niša","Iza voska, među kamenjem, blista nešto metalno. Željezni ključ — hladan i star.");
-          addJournal("crypt_chain"); renderScene();
-        }},
-      {id:"candle",x:7,y:60,w:10,h:38,label:"Svijeća",type:"examine",
-        text:"Plamen se ne miče iako kroz svod struji vjetar. 'Top govori, a grad sluša,' rekla je žena. Svijeća pamti."},
-      {id:"to_square",x:70,y:8,w:30,h:92,label:"Markov trg →",type:"transition",to:"markov_trg",
-        cond:()=>G.flags.talked_marta, denied:"Žena te zaustavlja pogledom. Najprije saslušaj što ima reći."}
+      {id:"candle",x:40,y:30,w:12,h:34,label:"Svijeća",glow:()=>!hasItem('candle_wax'),
+        action(){ if(!hasItem('candle_wax')){ addItem('candle_wax'); examine("Svijeća","Plamen gori mirno, iznutra zaključane sobe. Vosak je svjež. 'Svijeća nije prijetnja,' šapnut će ti kasnije starica. 'Svijeća je svjedok.' Uzimaš uzorak voska."); checkCrimeDone(); } else examine("Svijeća","Još gori. Kao da te čeka."); }},
+      {id:"box",x:54,y:55,w:18,h:18,label:"Kutija za nakit",type:"examine",
+        text:"Otvorena kutija od baršuna. Prazna, osim nekoliko razbacanih bisera. Ogrlice nema - ali brava kutije nije razbijena. Otvorena je ključem."},
+      {id:"seal",x:78,y:30,w:18,h:48,label:"Zapečaćena vrata",type:"examine",
+        text:"Teška hrastova vrata s netaknutim voštanim pečatom. Nitko nije ušao ni izašao kroz njih. Ako provale nije bilo, ogrlica je nestala uz pomoć nekoga iznutra, ili nije ni nestala."},
+      {id:"street_door",x:1,y:16,w:25,h:78,label:"Vrata na ulicu →",type:"transition",to:"alley"}
     ]
   },
 
-  markov_trg:{
-    name:"Markov trg",
-    bg:IMG.square, bgPos:"center",
-    quest:()=> "Ispitaj Magistru Doricu i zlatarevu tezgu.",
-    desc:"Srce Gradeca. Šarena krovišta crkve sv. Marka svijetle u sumrak. Magistra Dorica stoji uz oglasnu ploču; uz rub trga zlatareva tezga.",
+  alley:{
+    name:"Kamenita vrata", act:"Čin I - Nestanak", bg:IMG.alley,
+    quest:()=> G.flags.talked_witch ? "Kreni na Dolac: kroz ulicu desno ili preko karte (M)." : "Razgovaraj s Mudrom staricom u niši.",
+    desc:"U niši kraj Kamenitih vrata gori svijeća koja, kažu, nikad ne dogori. Uz nju sjedi mudra starica s Kaptola, tamne kose i mirna pogleda.",
     hotspots:[
-      {id:"dorica",x:40,y:56,w:13,h:44,label:"Magistra Dorica",type:"dialogue",dialogue:"dorica_intro"},
-      {id:"board",x:0,y:34,w:13,h:34,label:"Oglasna ploča",type:"examine",
-        text:"Proglas: 'Tko god vrati ogrlicu pokojne Dorotee Kovačić prije jutarnjeg topa, bit će nagrađen.' Ispod, sitnije: 'Kaptol neka odgovara za svoje.'"},
-      {id:"stall",x:22,y:64,w:16,h:36,label:"Zlatareva tezga",type:"transition",to:"zlatareva_radionica",
-        action(){ if(!G.flags.met_juraj){toast("Tezga je prazna. Zlatar je u radionici iza nje."); } go("zlatareva_radionica"); }},
-      {id:"to_gate",x:0,y:70,w:20,h:30,label:"← Kamenita vrata",type:"transition",to:"kamenita_vrata"},
-      {id:"to_kaptol",x:86,y:18,w:14,h:82,label:"Kaptol →",type:"transition",to:"kaptol_ext"}
+      {id:"witch",x:23,y:34,w:26,h:64,label:"Mudra starica",type:"dialogue",dialogue:"witch_intro"},
+      {id:"shrine",x:4,y:30,w:13,h:44,label:"Svijeća u niši",type:"examine",
+        text:"Plamen ne titra ni na propuhu. 'Top govori, a grad sluša,' kaže starica. 'Ali svijeća - svijeća pamti tko je ušao u mrak.'"},
+      {id:"to_town",x:50,y:22,w:16,h:54,label:"Na Dolac → (tržnica)",
+        glow:()=>G.flags.talked_witch,
+        cond:()=>G.flags.talked_witch, denied:"Najprije saslušaj Mudru staricu.",
+        action(){ maybeAct2(); go("dolac"); }},
+      {id:"back",x:80,y:40,w:18,h:50,label:"← Natrag u sobu",type:"transition",to:"crime_scene"}
     ]
   },
 
-  zlatareva_radionica:{
-    name:"Zlatareva radionica",
-    bg:BG.workshop, bgPos:"center",
-    quest:()=> G.flags.juraj_ho_done ? "Pregledaj drugi ledger." : "Razgovaraj sa zlatarem Jurajem.",
-    desc:"Toplo, zagušljivo od dima. Po stolu razbacan alat, kalupi, napola dovršeni prsten. Juraj diže pogled, oprezno.",
+  goldsmith:{
+    name:"Zlatareva radionica", act:"Čin II - Istraga", bg:IMG.workshop, bgPos:"center",
+    quest:()=> G.flags.ledger_done ? "Pregledaj zlatarevu knjigu (spoji tragove)." : "Ispitaj zlatara Juraja o ogrlici.",
+    desc:"Toplo, zagušljivo od dima. Po stolu kalupi i napola dovršen prsten. Juraj diže pogled - oprezno, kao čovjek koji previše zna.",
     hotspots:[
-      {id:"juraj",x:30,y:40,w:16,h:42,label:"Zlatar Juraj",type:"dialogue",dialogue:"juraj_intro"},
-      {id:"desk",x:9,y:42,w:33,h:24,label:"Radni stol",glow:()=>G.flags.juraj_allow_search&&!G.flags.juraj_ho_done,
+      {id:"juraj",x:45,y:20,w:18,h:54,label:"Zlatar Juraj",type:"dialogue",dialogue:"juraj_intro"},
+      {id:"desk",x:28,y:72,w:30,h:24,label:"Radni stol",glow:()=>G.flags.juraj_allow&&!G.flags.ledger_done,
         action(){
-          if(!G.flags.juraj_allow_search){ examine("Radni stol","Juraj te pažljivo motri. Ne želi da kopaš po njegovim stvarima — barem ne dok mu ne dadeš razloga za povjerenje."); return; }
-          if(G.flags.juraj_ho_done){ examine("Radni stol","Stol je sad uredan. Drugi ledger već je u tvojim rukama."); return; }
+          if(!G.flags.juraj_allow){ examine("Radni stol","Juraj te pažljivo motri. Neće da kopaš po njegovim stvarima - ne dok mu ne daš razloga za povjerenje."); return; }
+          if(G.flags.ledger_done){ examine("Radni stol","Sve si već uzela odavde."); return; }
           startHO("goldsmith_ho");
         }},
-      {id:"forge",x:60,y:42,w:18,h:26,label:"Kovačnica",type:"examine",
-        text:"Žar tinja. Ovdje se tope i prave kalupi. Dovoljno vruće da se izgubi dokaz — ili da se pretopi nakit."},
-      {id:"to_square",x:42,y:82,w:30,h:18,label:"← Markov trg",type:"transition",to:"markov_trg"}
+      {id:"crucible",x:11,y:50,w:11,h:22,label:"Žeravnik za taljenje",type:"examine",
+        text:"Mali žeravnik s rastopljenim zlatom. Dovoljno vruć da se nakit pretopi - ili da se izradi savršena kopija."},
+      {id:"sphere",x:77,y:39,w:10,h:19,label:"Armilarna sfera",type:"examine",
+        text:"Mjedena sfera sa zvjezdanim obručima. Skupa igračka za običnog zlatara - tko mu je to platio?"},
+      {id:"to_archive",x:88,y:24,w:11,h:58,label:"Van → (Kaptolski arhiv)",
+        glow:()=>hasItem('forged_letter'),
+        cond:()=>hasItem('forged_letter'),
+        denied:"Spoji prazan pergament i voštani pečat u Krivotvoreno pismo (inventar, I).",
+        type:"transition",to:"archive"},
+      {id:"back",x:38,y:88,w:24,h:12,label:"← Karta",action(){openPanel('map');}}
     ]
   },
 
-  kaptol_ext:{
-    name:"Kaptol — pred katedralom",
-    bg:IMG.kaptol, bgPos:"center 35%",
-    quest:()=> "Uđi u katedralu i nađi kanonika Stjepana.",
-    desc:"Sutonsko nebo nad biskupskim Kaptolom. Redovnik Blaž stoji pred vratima, stišćući pismo. Iza njega zjape vrata katedrale.",
+  archive:{
+    name:"Kaptolski arhiv", act:"Čin II - Istraga", bg:IMG.archive_canon, bgPos:"center",
+    quest:()=> G.flags.maps_overlaid ? "Siđi u kriptu prema sobi svijeća." : "Ispitaj Redovnika Blaža. Usporedi karte ubojstava i optužbi.",
+    desc:"Pod svodom kaptolskog arhiva miriše na vosak i prašinu. Redovnik Blaž stoji nad starom kartom grada. Pokraj - dvije karte čekaju da ih netko preklopi.",
     hotspots:[
-      {id:"blaz",x:11,y:22,w:21,h:78,label:"Redovnik Blaž",type:"dialogue",dialogue:"blaz_intro"},
-      {id:"to_int",x:37,y:30,w:20,h:70,label:"U katedralu →",type:"transition",to:"kaptol_int"},
-      {id:"to_square",x:0,y:34,w:10,h:66,label:"← Markov trg",type:"transition",to:"markov_trg"},
-      {id:"to_dolac",x:89,y:28,w:11,h:72,label:"Dolac →",type:"transition",to:"dolac"}
-    ]
-  },
-
-  kaptol_int:{
-    name:"Kaptolska katedrala",
-    bg:BG.kaptol_int, bgPos:"center 30%",
-    quest:()=> G.flags.crypt_open ? "Siđi u otvorenu kriptu." : "Govori s kanonikom. Potraži put u kriptu.",
-    desc:"Mrak pod visokim svodom. Miris tamjana i kamena. Kanonik Stjepan stoji uz ispovjedaonicu. U dnu, željezna vrata kripte — zaključana s dvije brave.",
-    hotspots:[
-      {id:"stjepan",x:42,y:40,w:16,h:44,label:"Kanonik Stjepan",type:"dialogue",dialogue:"stjepan_intro"},
-      {id:"table",x:8,y:54,w:18,h:22,label:"Stjepanov stol",glow:()=>fac('kaptol')>=15&&!G.flags.took_blueprint,
+      {id:"canon",x:28,y:26,w:18,h:54,label:"Redovnik Blaž",type:"dialogue",dialogue:"canon_intro"},
+      {id:"maps",x:34,y:66,w:28,h:26,label:"Dvije karte grada",glow:()=>G.flags.canon_help&&!G.flags.maps_overlaid,
         action(){
-          if(fac('kaptol')<15){ examine("Stjepanov stol","Papiri uredno složeni. Stjepan te ne bi pustio da kopaš — još ti ne vjeruje dovoljno (Kaptol ≥ 15)."); return; }
-          if(G.flags.took_blueprint){ examine("Stjepanov stol","Ostali papiri ne govore ništa novo."); return; }
-          addItem("kaptol_blueprint"); G.flags.took_blueprint=true;
-          examine("Stjepanov stol","Među spisima — tlocrt katedrale. Tanka linija vodi iza oltara, do kripte. Uzimaš ga dok Stjepan ne gleda.");
+          if(!G.flags.canon_help){ examine("Karte","Zaključane su u ormaru Redovnika Blaža. Najprije ga moraš pridobiti."); return; }
+          if(G.flags.maps_overlaid){ examine("Karte","Preklopljene karte i dalje pokazuju isto: križ na mjestu tajne sobe pod Gričem."); return; }
+          startMapPuzzle();
         }},
-      {id:"fireplace",x:74,y:52,w:16,h:24,label:"Kamin uz sakristiju",glow:()=>hasItem("blank_parchment")&&hasItem("wax_seal")&&!hasItem("copied_letter"),
+      {id:"shelf",x:0,y:10,w:16,h:60,label:"Police s rukopisima",glow:()=>fac('kaptol')>=12&&!hasItem('glagol_manuscript'),
         action(){
-          if(hasItem("blank_parchment")&&hasItem("wax_seal")){
-            examine("Kamin uz sakristiju","Topli vosak omekša pri vatri. Pritišćeš pečat na pergament... Kopirano pismo s kaptolskim grbom je gotovo. Spoji pergament i pečat u inventaru da ga dovršiš.");
-          } else {
-            examine("Kamin uz sakristiju","Žeravica tinja. Ovdje bi se topli vosak dao utisnuti — kad bi imao i pergament i pečat.");
-          }
+          if(fac('kaptol')<12){ examine("Police","Stari samostanski rukopisi. Redovnik Blaž te ne bi pustio među njih bez povjerenja (Kaptol ≥ 12)."); return; }
+          if(hasItem('glagol_manuscript')){ examine("Police","Ostali su rukopisi bez značaja za tvoj slučaj."); return; }
+          addItem('glagol_manuscript');
+          examine("Police s rukopisima","Među svescima - glagoljski rukopis. Ključ za čitanje znakova koje ubojica urezuje u svijeće. Sada možeš prevesti slova.");
         }},
-      {id:"crypt_door",x:42,y:78,w:18,h:18,label:"Vrata kripte",glow:()=>!G.flags.crypt_open,
-        action(){
-          if(G.flags.crypt_open){ go("crypt"); return; }
-          if(hasItem("second_key")&&hasItem("iron_key")){
-            G.flags.crypt_open=true; toast("<span class='ti'>Kripta otvorena.</span> Dvije brave popuštaju.");
-            completeJournal("crypt_chain"); addJournal("crypt_investigate"); renderScene();
-          } else if(hasItem("iron_key")){
-            examine("Vrata kripte","Dvije brave. Željezni ključ paše u jednu — druga traži poseban ključ. Tlocrt bi mogao pokazati kako ga skovati.");
-          } else {
-            examine("Vrata kripte","Teška željezna vrata s dvije brave. Trebat će ti ključevi.");
-          }
-        }},
-      {id:"to_ext",x:0,y:82,w:22,h:18,label:"← Van",type:"transition",to:"kaptol_ext"}
-    ]
-  },
-
-  crypt:{
-    name:"Kripta pod katedralom",
-    bg:BG.crypt, bgPos:"center",
-    quest:()=> "Pregledaj sarkofag. Riješi tajnu svijeća.",
-    desc:"Hladno. Samo svjetlo lampe. Kameni sarkofag u sredini, a iza njega uska niša s pet svijeća i uklesanim natpisom.",
-    hotspots:[
-      {id:"sarcophagus",x:40,y:56,w:22,h:24,label:"Sarkofag",type:"examine",
-        text:"Sarkofag Dorotee Kovačić, 1572. Poklopac je nakrivljen — netko ga je već otvarao. Unutra prazno, osim mrlje voska."},
-      {id:"candles",x:64,y:36,w:22,h:32,label:"Niša s pet svijeća",glow:()=>!G.flags.candle_solved,
-        action(){ if(G.flags.candle_solved){ examine("Niša","Mehanizam je već otvoren. Drugi plamen još gori."); return;} startCandlePuzzle(); }},
-      {id:"archive_door",x:8,y:48,w:14,h:30,label:"Vrata arhiva",glow:()=>fac('kaptol')>=30&&!G.flags.dorotea_done,
-        action(){
-          if(fac('kaptol')<30){ examine("Vrata arhiva","Zaključana vrata kaptolskog arhiva. Stjepan bi ti dao pristup tek uz veće povjerenje (Kaptol ≥ 30)."); return; }
-          if(G.flags.dorotea_done){ go("dorotea_soba"); return; }
-          go("dorotea_soba");
-        }},
-      {id:"to_int",x:0,y:82,w:22,h:18,label:"← Gore u katedralu",type:"transition",to:"kaptol_int"}
-    ]
-  },
-
-  dorotea_soba:{
-    name:"Dorotejina soba (arhiv)",
-    bg:BG.dorotea, bgPos:"center",
-    quest:()=> G.flags.dorotea_done ? "Razmotri minijaturni portret." : "Pretraži zapečaćenu sobu.",
-    desc:"Soba zatvorena od 1572. Prašina, izblijedjeli portret, prevrnut pisaći stol. Ovdje je živjela — i možda umrla — Dorotea Kovačić.",
-    hotspots:[
-      {id:"search",x:30,y:34,w:42,h:40,label:"Pretraži sobu",glow:()=>!G.flags.dorotea_done,
-        action(){ if(G.flags.dorotea_done){ examine("Soba","Već si pronašao sve što ova soba krije."); return;} startHO("dorotea_ho"); }},
-      {id:"portrait",x:7,y:22,w:16,h:40,label:"Veliki portret",type:"examine",
-        text:"Portret mlade žene strogog pogleda. Pri dnu, sitnim slovima: 'Ona koja je previše vidjela.'"},
-      {id:"to_crypt",x:0,y:82,w:22,h:18,label:"← Kripta",type:"transition",to:"crypt"}
+      {id:"crypt_down",x:4,y:78,w:18,h:20,label:"Stube u kriptu ↓",glow:()=>G.flags.maps_overlaid,
+        action(){ if(!G.flags.maps_overlaid){ examine("Stube","Ne znaš još kamo vode. Preklopi karte i otkrij gdje je skrivena soba."); return;} go("crypt"); }},
+      {id:"back",x:40,y:88,w:20,h:12,label:"← Karta",action(){openPanel('map');}}
     ]
   },
 
   dolac:{
-    name:"Dolac",
-    bg:BG.dolac, bgPos:"center",
-    quest:()=> G.flags.dolac_night ? "Pretraži noćnu tržnicu." : "Kupi pergament. Prati sumnjivog trgovca.",
+    name:"Dolac", act:"Čin II - Istraga", bg:()=> G.flags.dolac_night ? IMG.market_night : IMG.market, bgPos:"center",
+    quest:()=> G.flags.dolac_night ? "Pretraži napuštene tezge u mraku." : "Kupi pergament. Prati sumnjivog trgovca s nakitom.",
     desc:()=> G.flags.dolac_night
-      ? "Ponoć. Tržnica je pusta, tek poneki fenjer. Tamo, među napuštenim tezgama, miče se sjena trgovca."
-      : "Jutarnja tržnica pod crvenim suncobranima. Među prodavačima, jedan trgovac nudi nakit koji ti djeluje poznato.",
+      ? "Suton. Trgovac je pobjegao i ostavio svoju tezgu. Među napuštenim tezgama vrijedi prekopati."
+      : "Jutarnja tržnica. Jedan trgovac nudi ogrlicu koja ti djeluje vrlo, vrlo poznato.",
     hotspots:[
-      {id:"parchment_stall",x:60,y:40,w:16,h:28,label:"Tezga s pergamentom",glow:()=>!hasItem("blank_parchment")&&!G.flags.dolac_night,
-        cond:()=>!G.flags.dolac_night, denied:"Tezge su noću zatvorene.",
-        action(){ if(hasItem("blank_parchment")){examine("Tezga","Već imaš pergament."); return;} addItem("blank_parchment"); examine("Tezga s pergamentom","Kupuješ gladak, skup pergament. Prodavač ga zamota bez riječi."); }},
-      {id:"merchant",x:20,y:40,w:16,h:38,label:"Sumnjivi trgovac",type:"dialogue",dialogue:"merchant_intro",
-        cond:()=>!G.flags.dolac_night, denied:"Trgovac je nestao u noći. Slijedi ga među tezgama."},
-      {id:"night_search",x:14,y:38,w:34,h:40,label:"Pretraži tezge",glow:()=>G.flags.dolac_night&&!G.flags.dolac_ho_done,
-        cond:()=>G.flags.dolac_night,
-        action(){ if(G.flags.dolac_ho_done){examine("Tezge","Već si pronašao sve.");return;} startHO("dolac_ho"); }},
-      {id:"to_kaptol",x:0,y:82,w:22,h:18,label:"← Kaptol",type:"transition",to:"kaptol_ext"}
+      {id:"parch",x:3,y:60,w:25,h:34,label:"Tezga s pergamentom",glow:()=>!hasItem('blank_parchment'),
+        action(){
+          if(hasItem('blank_parchment')){examine("Tezga","Već imaš pergament."); return;}
+          addItem('blank_parchment');
+          examine("Tezga s pergamentom", G.flags.dolac_night
+            ? "Prodavač pergamenta još slaže robu pod fenjerom. Kupuješ gladak, skup pergament; zamota ga bez riječi."
+            : "Kupuješ gladak, skup pergament. Prodavač ga zamota bez riječi.");
+        }},
+      {id:"merchant",x:76,y:48,w:20,h:46,label:"Sumnjivi trgovac",type:"dialogue",dialogue:"merchant_intro",
+        show:()=>!G.flags.dolac_night},
+      {id:"night_search",x:60,y:46,w:36,h:48,label:"Pretraži trgovčevu tezgu",glow:()=>!G.flags.dolac_done,
+        show:()=>G.flags.dolac_night,
+        action(){ if(G.flags.dolac_done){examine("Tezge","Već si pronašla sve."); return;} startHO("dolac_ho"); }},
+      {id:"to_workshop",x:43,y:28,w:14,h:40,label:"Stube u grad → (Zlatareva radionica)",
+        glow:()=>G.flags.dolac_done&&hasItem('blank_parchment'),
+        cond:()=>G.flags.dolac_done&&hasItem('blank_parchment'),
+        denied:"Najprije kupi pergament (lijevo) i pretraži trgovčevu tezgu.",
+        type:"transition",to:"goldsmith"},
+      {id:"back",x:40,y:88,w:20,h:12,label:"← Karta",action(){openPanel('map');}}
     ]
   },
 
-  krvavi_most:{
-    name:"Krvavi most",
-    bg:IMG.bridge, mode:"band",
-    quest:()=> "Suoči se s istinom. Donesi odluku.",
-    desc:"Magla nad mostom koji dijeli Gradec i Kaptol. Stražar Mato stoji na sredini. Ovdje sve završava — onako kako si zaslužio.",
+  crypt:{
+    name:"Kripta pod Gričem", act:"Čin II - Istraga", bg:IMG.crypt, bgPos:"center",
+    quest:()=> G.flags.crypt_open ? "Uđi u sobu svijeća." : "Pronađi ulaz u skrivenu sobu. Trebat će ti ključ.",
+    desc:"Hladan kameni hodnik pod svodovima. Svjetlo lampe puže po zidovima. U dnu - niska željezna vrata.",
     hotspots:[
-      {id:"guard",x:54,y:42,w:16,h:58,label:"Stražar Mato",type:"dialogue",dialogue:"guard_bridge"},
-      {id:"finale",x:70,y:38,w:20,h:62,label:"Kraj mosta",glow:()=>G.flags.bridge_open,
-        action(){ if(!G.flags.bridge_open){ examine("Kraj mosta","Stražar ti priječi prolaz. Najprije ga moraš nagovoriti."); return;} openFinale(); }},
-      {id:"to_kaptol",x:0,y:34,w:13,h:66,label:"← Natrag",type:"transition",to:"kaptol_ext"}
+      {id:"door",x:44,y:30,w:18,h:40,label:"Vrata sobe svijeća",glow:()=>!G.flags.candle_solved,
+        action(){
+          if(G.flags.candle_solved){ go("candle_room"); return; }
+          if(hasItem('crypt_key')){ go("candle_room"); }
+          else examine("Vrata","Zaključana s dvije brave. Trebaš ključ kripte. Možda ga skuješ po tragovima koje već imaš."); }},
+      {id:"niche",x:10,y:48,w:14,h:30,label:"Niša u zidu",type:"examine",
+        text:"U niši dogorjela svijeća i urezan znak - polumjesec. Isti znak vodi prema sobi iza vrata."},
+      {id:"back",x:78,y:74,w:20,h:22,label:"← Gore u arhiv",type:"transition",to:"archive"}
+    ]
+  },
+
+  candle_room:{
+    name:"Soba svijeća", act:"Čin II - Istraga", bg:IMG.candle_room, bgPos:"center",
+    quest:()=> G.flags.candle_solved ? "Pogledaj što se otkrilo. Vrati se istini." : "Riješi zagonetku pet svijeća.",
+    desc:"Skrivena prostorija pod Gričem. Police pune svijeća - po jedna za svaku nestalu ženu. Na oltaru pet ih stoji odvojeno, ispod uklesanog natpisa.",
+    hotspots:[
+      {id:"candles",x:36,y:42,w:28,h:30,label:"Pet svijeća",glow:()=>!G.flags.candle_solved,
+        action(){ if(G.flags.candle_solved){ examine("Pet svijeća","Druga svijeća još gori. Mehanizam je otvoren."); return;} startCandlePuzzle(); }},
+      {id:"inscription",x:8,y:30,w:18,h:24,label:"Uklesani natpis",type:"examine",
+        text:"\"Pet je svjedočilo. Tri su lagale. Jedna je vidjela istinu. Pronađi njezin plamen.\" Ispod, sitnije: \"Samo jedna govori istinu.\""},
+      {id:"altar",x:40,y:60,w:24,h:22,label:"Oltar",glow:()=>G.flags.candle_solved&&!hasItem('necklace_real'),
+        action(){
+          if(!G.flags.candle_solved){ examine("Oltar","Zaključan pretinac. Riješi zagonetku svijeća da ga otvoriš."); return; }
+          if(hasItem('necklace_real')){ examine("Oltar","Prazan. Uzela si ono što je krilo."); return; }
+          addItem('necklace_real'); G.flags.has_necklace=true;
+          examine("Oltar","Iza druge svijeće otvara se pretinac. Unutra - prava ogrlica, skrivena ovdje cijelo vrijeme. Nikad nije ukradena. Sve je bila predstava da grad zarati sam sa sobom.");
+          maybeTwist();
+        }},
+      {id:"to_bridge",x:30,y:82,w:34,h:15,label:"Na Krvavi most → (Čin III)",
+        glow:()=>G.act>=3,
+        cond:()=>G.act>=3,
+        denied:"Najprije uzmi pravu ogrlicu i razotkrij prijevaru.",
+        type:"transition",to:"bridge"},
+      {id:"back",x:78,y:74,w:20,h:22,label:"← Hodnik",type:"transition",to:"crypt"}
+    ]
+  },
+
+  bridge:{
+    name:"Krvavi most", act:"Čin III - Obračun", bg:IMG.bridge, bgPos:"center",
+    quest:()=> "Suoči se s onim tko stoji u sjeni. Donesi odluku.",
+    desc:"Zora se probija kroz maglu nad mostom koji dijeli Gradec i Kaptol. Na sredini čeka prilika koju cijeli grad sluša, a nitko ne sumnja.",
+    hotspots:[
+      {id:"draskovic",x:46,y:36,w:16,h:56,label:"Sjena na mostu",type:"dialogue",dialogue:"draskovic_final"},
+      {id:"finale",x:66,y:36,w:22,h:60,label:"Kraj mosta",glow:()=>G.flags.confronted,
+        action(){ if(!G.flags.confronted){ examine("Kraj mosta","Najprije se moraš suočiti sa sjenom na sredini mosta."); return;} openFinale(); }},
+      {id:"back",x:0,y:80,w:16,h:20,label:"← Karta",action(){openPanel('map');}}
     ]
   }
 };
 
-/* ---------------------------------------------------------------------
+/* =====================================================================
    DIALOGUES
-   --------------------------------------------------------------------- */
+   ===================================================================== */
 const DIALOGUES = {
-  marta_intro:{speaker:"marta",portrait:()=>G.flags.candle_solved?PORTRAITS.marta:PORTRAITS.marta,
-    start:"m1",
+  witch_intro:{speaker:"vjestica",start:"w1",
     nodes:{
-      m1:{text:"Top govori, a grad sluša. Ti si nov ovdje — još mirišeš na cestu, ne na pepeo.",
+      w1:{text:"Top govori, a grad sluša. Ti si nova ovdje, Nera - još mirišeš na cestu, ne na pepeo. Dobro. Onima bez strane otvaraju se obje.",
         choices:[
-          {t:"Tko si ti?",next:"m2"},
-          {t:"Znaš li nešto o ukradenoj ogrlici?",next:"m3"},
-          {t:"Pusti me na miru.",next:"m_end"}
+          {t:"Tko si ti?",next:"w2"},
+          {t:"Što znaš o ukradenoj ogrlici?",next:"w3"},
+          {t:"Žene nestaju. Zašto?",next:"w4"}
         ]},
-      m2:{text:"Zovu me Grička Vještica. Ja sam najstariji šapat ovog brda. Govorim istinu samo u zagonetkama — pa pazi koje predmete nosiš pred mene.",
-        effect(){G.flags.knows_marta=true; unlockCodex('marta');},
-        choices:[{t:"O ogrlici?",next:"m3"},{t:"Razumijem.",next:"m4"}]},
-      m3:{text:"Ogrlica nije ukradena. Ona se vratila kući — ili netko želi da tako misliš. Pitaj se: tko dobiva ako Gradec i Kaptol jedan drugom skoče za vrat?",
-        effect(){G.flags.knows_about_necklace=true; addJournal("main_case");},
-        choices:[{t:"Kako da počnem?",next:"m4"}]},
-      m4:{text:"Iza ove niše leži željezni ključ. Uzmi ga. Svaki put kad se izgubiš, vrati se kamenu — kamen pamti bolje od ljudi.",
-        effect(){G.flags.talked_marta=true; SCENES.kamenita_vrata; },
-        choices:[{t:"Hvala ti.",next:"m_end"}]},
-      m_end:{text:"Idi. Top ne čeka, a ni istina.",effect(){G.flags.talked_marta=true;},end:true}
+      w2:{text:"Zovu me Mudrom staricom s Kaptola. Ja sam najstariji šapat ovog brda. Govorim istinu - ali samo u zagonetkama. Zato pazi koje predmete nosiš preda me; pravoj stvari progovorit ću pravo.",
+        effect(){ unlockCodex('vjestica'); },
+        choices:[{t:"O ogrlici?",next:"w3"},{t:"O ženama?",next:"w4"}]},
+      w3:{text:"Ogrlica nije ukradena. Vratila se kući - ili netko želi da tako misliš. Pitaj se jedno: tko dobiva ako Gradec i Kaptol skoče jedan drugom za vrat?",
+        effect(){ addTheory("Ogrlica možda nije ukradena - sukob dviju strana nekome je koristan."); addJournal("main_case"); },
+        choices:[{t:"A žene?",next:"w4"},{t:"Kako da počnem?",next:"w5"}]},
+      w4:{text:"Svaku su optužili za vještičarenje. Ali nije ih ubila vjera. Sve su vidjele nešto - tajnu, potpis, lice u mraku. Strah od vještica samo je plašt preko noža.",
+        effect(){ addTheory("Žrtve nisu birane slučajno - sve su znale nešto opasno.",true); },
+        choices:[{t:"Kako da počnem?",next:"w5"}]},
+      w5:{text:"Uzmi ovaj kompas. Igla ne traži sjever, traži izlaz iz mraka. Slijedi plamen, ne strah, Nera. Što budeš bliže istini, to će grad biti svjetliji.",
+        effect(){ if(!hasItem('compass')) addItem('compass'); G.flags.talked_witch=true; },
+        choices:[{t:"Hvala ti.",next:"wend"}]},
+      wend:{text:"Idi. Top ne čeka, a ni istina. Kad zapne, vrati se kamenu - kamen pamti bolje od ljudi.",
+        effect(){ G.flags.talked_witch=true; maybeAct2(); }, end:true}
     }},
 
-  dorica_intro:{speaker:"dorica",portrait:()=>PORTRAITS.dorica,start:"d1",
-    cond:()=>fac('gradec')>=-999,
+  juraj_intro:{speaker:"juraj",start:"j1",
     nodes:{
-      d1:{text:"Stranac s preporukom. Kakav prikladan alat za nezgodan posao. Ja sam Dorica, magistra Gradeca. Ogrlicu su nam ukrali Kaptolci — to je očito.",
+      j1:{text:"Stranac u mojoj radionici. Ako tražiš nakit - kasno je, sve mi je nekako 'nestalo'. Što hoćeš?",
+        effect(){ rel('juraj','Oprezan'); },
         choices:[
-          {t:"Zašto ste tako sigurni da je Kaptol?",next:"d2"},
-          {t:"Trebam pristup zlatarevoj knjizi.",next:"d3"},
-          {t:"Treba mi nešto čime ću otvoriti usta stražaru.",next:"d_coin",cond:()=>fac('gradec')>=20},
-          {t:"Vjerovat ću samo dokazima.",next:"d_neutral"}
+          {t:"Reci mi o ogrlici.",next:"j2"},
+          {t:"[Pokaži uzorak voska]",next:"j_wax",cond:()=>hasItem('candle_wax')},
+          {t:"Smijem li pregledati tvoj stol?",next:"j3"}
         ]},
-      d2:{text:"Jer im odgovara. Ako Gradec ispadne nesposoban čuvati blago, biskup traži nadzor nad gradom. Pomogni mi, i Gradec će ti biti zahvalan.",
-        effect(){facAdd('gradec',12); rel('dorica','Oprezna');},
-        choices:[{t:"Razmislit ću.",next:"d_end"},{t:"To zvuči kao pretpostavka, ne dokaz.",next:"d_neutral"}]},
-      d3:{text:"Cehovska knjiga? Zlatar Juraj je tvrdoglav. Pokaži mu da si na strani Gradeca i otvorit će ti je. Ili je uzmi sam — nije me briga kako.",
-        effect(){facAdd('gradec',5);},
-        choices:[{t:"U redu.",next:"d_end"}]},
-      d_coin:{text:"Hrabar zahtjev. Evo gradskog novčića — ne za kupovinu, nego za jezik. Stražari Krvavog mosta poznaju njegov sjaj. Ali zapamti komu duguješ.",
-        effect(){ if(!hasItem('city_coin')){addItem('city_coin'); facAdd('gradec',5); addJournal('guard_chain');} },
-        choices:[{t:"Zapamtit ću.",next:"d_end"}]},
-      d_neutral:{text:"Oprezan. Dobro. Oprez te može održati na životu u ovom gradu — ali neće ti otvoriti vrata. Vrati se kad odlučiš kome vjeruješ.",
-        effect(){facAdd('gradec',-2);},end:true},
-      d_end:{text:"Imamo dogovor, koliko god trajao. Top kuca, strance.",end:true}
+      j2:{text:"Tu sam ogrlicu... popravljao. Davno. Čudna narudžba. Netko je htio kopiju. Dvije iste, razumiješ? Ne pitaj tko - još mi je stalo do glave.",
+        effect(){ addTheory("Postoji kopija ogrlice - netko je naručio krivotvorinu."); facAdd('gradec',4); },
+        choices:[{t:"Tko ju je naručio?",next:"j2b"},{t:"Daj da vidim tvoje knjige.",next:"j3"}]},
+      j2b:{text:"Rekao sam - ne pitaj. Ali u mojoj knjizi piše više nego što bih ti smio reći. Ako baš moraš... gledaj, ali budi brza.",
+        effect(){ G.flags.juraj_allow=true; toast("Juraj ti dopušta pretragu stola."); },
+        choices:[{t:"Hvala.",next:"jend"}]},
+      j_wax:{text:"Taj vosak... to je s mjesta zločina, je li? Ista smjesa kakvu kupuju oni gore. Plemići. Svijeće za 'molitvu'. Molitvu, da. Gledaj moj stol, sve ti je tamo.",
+        effect(){ G.flags.juraj_allow=true; addTheory("Vosak svijeća dolazi iz plemićke nabave, ne iz crkve.",true); toast("Juraj ti dopušta pretragu stola."); },
+        choices:[{t:"Hvala na povjerenju.",next:"jend"}]},
+      j3:{text:"Moj stol? Hm. Nisi smetala, barem. Dobro. Gledaj, ali ništa ne lomi.",
+        effect(){ G.flags.juraj_allow=true; toast("Juraj ti dopušta pretragu stola."); },
+        choices:[{t:"Hvala.",next:"jend"}]},
+      jend:{text:"Brzo onda. Žar ne čeka.", effect(){ rel('juraj','Suradnik'); }, end:true}
     }},
 
-  juraj_intro:{speaker:"juraj",portrait:()=>PORTRAITS.juraj,start:"j1",
+  canon_intro:{speaker:"blaz",portrait:()=>PORTRAITS.blaz,start:"c1",
     nodes:{
-      j1:{text:"Stranac u mojoj radionici. Ako tražiš nakit, kasno je — najbolje mi je 'nestalo'. Što hoćeš?",
-        effect(){G.flags.met_juraj=true; rel('juraj','Prijatan');},
+      c1:{text:"Još jedna istražiteljica. Gradec šalje strance da rade ono što sami ne smiju. Ja sam Blaž; pazim na ovaj arhiv. I sam tražim istinu o krađi - iz drugih razloga.",
         choices:[
-          {t:"Pričaj mi o ogrlici Dorotee Kovačić.",next:"j2"},
-          {t:"Smijem li pregledati tvoj radni stol?",next:"j3"},
-          {t:"Ništa. Samo gledam.",next:"j_end"}
+          {t:"Kojih razloga?",next:"c2"},
+          {t:"Trebam pristup kartama.",next:"c3"},
+          {t:"[Pokaži krivotvoreno pismo]",next:"c_letter",cond:()=>hasItem('forged_letter')},
+          {t:"Tko je Dora Krupić?",next:"c_dora",cond:()=>hasItem('locket')}
         ]},
-      j2:{text:"Tu ogrlicu sam... popravljao, davno. Čudna narudžba. Netko je htio kopiju. Dvije iste, razumiješ? Ne pitaj tko — još mi je stalo do glave.",
-        effect(){G.flags.knows_copy=true; addTheory("Postoji kopija ogrlice — netko je naručio krivotvorinu."); facAdd('gradec',3);},
-        choices:[{t:"Tko ju je naručio?",next:"j2b"},{t:"Daj da pogledam tvoje knjige.",next:"j3"}]},
-      j2b:{text:"Rekao sam — ne pitaj. Ali u mojoj drugoj knjizi piše više nego što bih ti smio reći. Ako baš moraš... gledaj, ali budi brz.",
-        effect(){G.flags.juraj_allow_search=true; toast("Juraj ti dopušta pretragu stola.");},
-        choices:[{t:"Hvala.",next:"j_end"}]},
-      j3:{text:"Moj stol? Hm. Pomogao si... ili barem nisi smetao. Dobro. Gledaj, ali ništa ne lomi.",
-        effect(){G.flags.juraj_allow_search=true; toast("Juraj ti dopušta pretragu stola.");},
-        choices:[{t:"Hvala.",next:"j_end"}]},
-      j_end:{text:"Brzo onda. Žar ne čeka.",end:true}
+      c2:{text:"Žene koje su nestale nisu bile vještice. Bile su svjedoci. Crkva je to prešutjela jer su među krivcima i naši. Ako se istina otvori, padaju i mitre, ne samo glave.",
+        effect(){ addTheory("Među urotnicima su i crkveni dužnosnici, ne samo plemstvo.",true); facAdd('kaptol',8); rel('blaz','Neutralan'); },
+        choices:[{t:"Pomozi mi s kartama.",next:"c3"},{t:"Razmislit ću.",next:"cend"}]},
+      c3:{text:()=> fac('kaptol')>=10
+          ? "Dobro. Evo karata - jedna s ubojstvima, druga s optužbama. Preklopi ih. Možda vidiš ono što ja ne smijem izgovoriti."
+          : "Karte? Ne strancu koji još nije pokazao da nije Gradečev pas (Kaptol ≥ 10). Steci povjerenje, pa ćemo vidjeti.",
+        effect(){ if(fac('kaptol')>=10){ G.flags.canon_help=true; toast("Blaž ti otključava karte."); } },
+        choices:[{t:"Razumijem.",next:"cend"}]},
+      c_letter:{text:"Gdje si... ovo je kaptolski pečat. Ali ovo pismo nije naše. Krivotvorina! Netko piše u naše ime da raspali rat. Pitaj se komu rat koristi.",
+        effect(){ G.flags.canon_help=true; completeJournal("forge_chain"); addTheory("Netko krivotvori kaptolske dokumente da huška Gradec i Kaptol.",true); rel('blaz','Saveznik'); facAdd('kaptol',6); },
+        choices:[{t:"Komu koristi?",next:"c_letter2"}]},
+      c_letter2:{text:"Onomu komu rat donosi vlast nad oba grada. Plemiću koji stoji iznad obje strane, a pripada nijednoj. Pogledaj zlatarevu knjigu i potpise. Brojke ne lažu kao ljudi.",
+        effect(){ G.flags.stjepan_hint=true; },
+        choices:[{t:"Hvala na iskrenosti.",next:"cend"}]},
+      c_dora:{text:"Dora Krupić. Zlatareva kći. Posljednja koju su odveli. Vidjela je tko je naručio kopiju - i platila šutnjom vječnom. Taj medaljon je njezin. Čuvaj ga; on je glas mrtvih.",
+        effect(){ addTheory("Dora Krupić vidjela je naručitelja kopije - zato je uklonjena.",true); facAdd('kaptol',5); },
+        choices:[{t:"Neću je zaboraviti.",next:"cend"}]},
+      cend:{text:"Idi s mirom - ako ga u ovom gradu uopće ima.", end:true}
     }},
 
-  blaz_intro:{speaker:"blaz",portrait:()=>PORTRAITS.blaz,start:"b1",
+  merchant_intro:{speaker:"nera",start:"m1",
     nodes:{
-      b1:{text:"Ti si onaj stranac. Nosim pismo koje dokazuje da zemlja pripada Kaptolu — Gradec laže. Vrati ovo nepročitano, i Kaptol će stati uz tebe.",
-        choices:[
-          {t:"Zašto bih ti vjerovao?",next:"b2"},
-          {t:"[Kaptol] Pročitat ću pismo i vratiti ga.",next:"b_kaptol"},
-          {t:"[Gradec] Neću ti nositi poruke.",next:"b_gradec"}
-        ]},
-      b2:{text:"Jer ja, za razliku od drugih, nemam što skrivati. Ili barem tako mislim. Stjepan... kanonik... on zna više. Ali pazi s njim.",
-        effect(){G.flags.knows_stjepan=true;},
-        choices:[{t:"[Kaptol] Pomoći ću Kaptolu.",next:"b_kaptol"},{t:"[Gradec] Ne miješam se.",next:"b_gradec"}]},
-      b_kaptol:{text:"Bog te blagoslovio. Kaptol pamti prijatelje.",
-        effect(){facAdd('kaptol',20); facAdd('gradec',-4); rel('blaz','Zahvalan');},end:true},
-      b_gradec:{text:"Kako želiš. Ali ne čudi se ako ti se kaptolska vrata zatvore.",
-        effect(){facAdd('gradec',15); facAdd('kaptol',-8);},end:true}
+      m1:{text:"(Trgovac nudi ogrlicu nalik nestaloj. Kad mu priđeš, problijedi.) - Stani! Odakle ti to?",
+        effect(){ G.flags.dolac_night=true; addJournal("dolac_chain"); toast("Trgovac je pobjegao i ostavio tezgu. Pretraži je."); },
+        choices:[{t:"[Potjeraj ga - pa pretraži tezgu koju je ostavio]",next:"m2"}]},
+      m2:{text:"(Pobjegao je među tezge, ali u žurbi je sve ostavio na svojoj tezgi.)", end:true}
     }},
 
-  stjepan_intro:{speaker:"stjepan",portrait:()=>G.flags.canon_confronted?PORTRAITS.stjepan:PORTRAITS.stjepan,start:"s1",
+  draskovic_final:{speaker:"draskovic",start:"d1",
     nodes:{
-      s1:{text:"Još jedan istražitelj. Gradec šalje strance da rade ono što sami ne smiju. Ja istražujem istu krađu — iz drukčijih razloga.",
+      d1:{text:"Nera. Putujuća istražiteljica bez korijena. Znaš, divim ti se. Dok su svi gledali vještice, ti si gledala mene. Šteta. Mogla si otići živa.",
+        effect(){ if(!G.flags.knows_villain){ G.flags.knows_villain=true; addTheory("Knez Drašković stoji iza ubojstava i lažne krađe.",true); unlockCodex('draskovic'); toast("<span class='ti'>Saznala si ime: Knez Drašković.</span>"); } },
         choices:[
-          {t:"Kojih razloga?",next:"s2"},
-          {t:"Trebam pristup kripti.",next:"s_crypt"},
-          {t:"[Pokaži kopirano pismo]",next:"s_letter",cond:()=>hasItem("copied_letter")},
-          {t:"Tajni zapis — što kriješ?",next:"s_secret",cond:()=>fac('kaptol')>=50},
-          {t:"Ništa zasad.",next:"s_end"}
+          {t:"Ti si ubio te žene.",next:"d2"},
+          {t:"Ogrlica nikad nije ukradena, zar ne?",next:"d3"},
+          {t:"Zašto rat između Gradeca i Kaptola?",next:"d4"}
         ]},
-      s2:{text:"Dorotea Kovačić nije umrla mirno 1572. Crkva je to zataškala. Ako se ogrlica vrati, otvaraju se i stara pitanja. Neki ih ne žele otvorene.",
-        effect(){G.flags.knows_dorotea=true; addTheory("Dorotejina smrt 1572. možda nije bila prirodna."); facAdd('kaptol',10); rel('stjepan','Neutralan');},
-        choices:[{t:"Pusti me u kriptu.",next:"s_crypt"},{t:"Razmislit ću.",next:"s_end"}]},
-      s_crypt:{text:()=> fac('kaptol')>=30
-          ? "Tvoja odanost Kaptolu je primijećena. Evo — put kroz kriptu je tvoj. Ali što nađeš, nosiš na svoju dušu."
-          : "Kripta? Ne. Ne dok ne pokažeš da si naš (Kaptol ≥ 30). Strancu se ne otvaraju kosti naših mrtvih.",
-        effect(){ if(fac('kaptol')>=30){G.flags.crypt_access=true; toast("Stjepan ti odobrava pristup arhivu kroz kriptu.");} },
-        choices:[{t:"Razumijem.",next:"s_end"}]},
-      s_letter:{text:"Gdje si... ovo je kaptolski pečat. Ovo pismo je krivotvorina — i ti to znaš. Što hoćeš? Da šutim? Pitaj, dok sam još popustljiv.",
-        effect(){G.flags.canon_confronted=true; completeJournal("forge_chain"); addTheory("Netko krivotvori kaptolske dokumente da raspiri sukob.",true); facAdd('kaptol',-6); rel('stjepan','Sumnjičav');},
-        choices:[{t:"Tko stoji iza svega?",next:"s_letter2"}]},
-      s_letter2:{text:"Ne 'tko' — 'kome koristi'. Onaj komu rat Gradeca i Kaptola donosi vlast. Pogledaj zlatarevu drugu knjigu i Doricin ledger. Brojke ne lažu kao ljudi.",
-        effect(){G.flags.stjepan_hint=true;},
-        choices:[{t:"Hvala na iskrenosti.",next:"s_end"}]},
-      s_secret:{text:"Kad si već zaslužio toliko povjerenje... Postoji zapis: ista ruka platila je i 'krađu' i progon vještice 1572. Ista ruka. Tri stoljeća iste sjene.",
-        effect(){G.flags.secret_record=true; addTheory("Ista osoba/obitelj stoji iza krađe i progona iz 1572.",true); unlockCodex('record');},
-        choices:[{t:"Onda znam što mi je činiti.",next:"s_end"}]},
-      s_end:{text:"Idi s mirom — ako ga u ovom gradu ima.",end:true}
-    }},
-
-  merchant_intro:{speaker:"player",portrait:()=>PORTRAITS.player,start:"t1",
-    nodes:{
-      t1:{text:"(Trgovac nudi ogrlicu nalik nestaloj. Kad mu priđeš, problijedi i pobjegne u uličicu.) — Stani! Odakle ti to?!",
-        effect(){G.flags.dolac_night=true; addJournal("dolac_chain"); toast("Tržnica tone u noć. Slijedi trgovca.");},
-        choices:[{t:"[Slijedi ga u noćni Dolac]",next:"t2"}]},
-      t2:{text:"(Trgovac je nestao, ali ostavio je trag — i nešto je ispalo među tezge u mraku.)",end:true}
-    }},
-
-  guard_bridge:{speaker:"guard",portrait:()=>PORTRAITS.guard,start:"g1",
-    nodes:{
-      g1:{text:()=> G.flags.bridge_open
-          ? "Prošao si, strance. Most je tvoj. Ono što slijedi nije više moja briga."
-          : "Most je zatvoren. Naredba magistre i kanonika. Nitko ne prolazi noćas.",
-        choices:[
-          {t:"[Pokaži stražarsku značku]",next:"g_badge",cond:()=>hasItem("guard_badge")&&!G.flags.guard_name},
-          {t:"Mato. Znam tvoje ime.",next:"g_name",cond:()=>G.flags.guard_name&&hasItem("city_coin")&&!G.flags.bridge_open},
-          {t:"Odlazim.",next:"g_end"}
-        ]},
-      g_badge:{text:"Odakle ti to?! To je... značka mostarske straže. Tko si ti?",
-        effect(){G.flags.guard_name=true; addTheory("Stražar Mato (M.R.) bio je na Dolcu one noći."); toast("Na poleđini značke: M.R. — Mato R.");},
-        choices:[{t:"Tvoje ime je urezano na poleđini, Mato.",next:"g1"}]},
-      g_name:{text:"(Pogled mu pada na gradski novčić.) ...Dobro. Dobro! Pustit ću te. Ali nisi me vidio. Ničega se ne sjećam — kao ni one noći.",
-        effect(){G.flags.bridge_open=true; removeItem('city_coin'); completeJournal("guard_chain"); toast("<span class='ti'>Krvavi most je otvoren.</span>"); renderScene();},
-        choices:[{t:"Nikad te nisam vidio.",next:"g_end"}]},
-      g_end:{text:"Idi onda.",end:true}
+      d2:{text:"Uklonio sam prijetnje. Svaka je nešto vidjela - potpis, narudžbu, lice. Strah od vještica? To je samo najstariji alat na svijetu. Daš svjetini čudovište i ona prestane gledati tebe.",
+        effect(){ G.flags.confronted=true; addTheory("Drašković priznaje: optužbe za vještice su paravan za uklanjanje svjedoka.",true); },
+        choices:[{t:"A ogrlica?",next:"d3"},{t:"Dovoljno sam čula.",next:"dend"}]},
+      d3:{text:"Naravno da nije ukradena. Sakrio sam je i pustio da Gradec optuži Kaptol. Dvije zavađene strane ne primijete kad im netko treći uzme cijeli grad. Lijepo, zar ne?",
+        effect(){ G.flags.confronted=true; addTheory("Drašković je insceniral krađu da zavadi grad i preuzme vlast.",true); },
+        choices:[{t:"Zašto rat?",next:"d4"},{t:"Gotovo je.",next:"dend"}]},
+      d4:{text:"Jer podijeljen grad treba gospodara. Dok se Gradec i Kaptol grizu, ja sam jedini kojem obje strane vjeruju. Sjena iznad obojice. Sad - predaj mi to što nosiš, i možda te pustim.",
+        effect(){ G.flags.confronted=true; },
+        choices:[{t:"Neću ti dati ništa.",next:"dend"}]},
+      dend:{text:"Kako želiš. Onda neka most odluči. Imaš li dokaza ili samo lijepih riječi, Nera?",
+        effect(){ G.flags.confronted=true; renderScene(); }, end:true}
     }}
 };
 
-/* ---------------------------------------------------------------------
+/* =====================================================================
    HIDDEN OBJECT SCENES
-   --------------------------------------------------------------------- */
+   ===================================================================== */
 const HO = {
-  goldsmith_ho:{bg:BG.workshop,reward:"second_ledger",bonus:"wax_seal",
+  goldsmith_ho:{bg:IMG.workshop_top,reward:"ledger",bonus:"wax_seal",
     title:"Zlatareva radionica",
-    intro:"Pretražuješ zatrpan stol. Pet predmeta krije priču.",
+    intro:"Naginješ se nad stol. Pet predmeta krije priču. (Kompas pokazuje gdje tražiti.)",
     items:[
-      {id:"a",name:"Druga knjiga",x:18,y:48},
-      {id:"b",name:"Voštani pečat",x:33,y:44},
-      {id:"c",name:"Kalup za kopiju",x:64,y:50},
-      {id:"d",name:"Skriveni novčić",x:80,y:62},
-      {id:"e",name:"Pismo bez potpisa",x:46,y:38}
+      {id:"a",name:"Cehovska knjiga",x:23,y:13},
+      {id:"b",name:"Voštani pečat",x:14,y:9},
+      {id:"c",name:"Kalup za kopiju",x:84,y:9},
+      {id:"d",name:"Skriveni novčić",x:60,y:28},
+      {id:"e",name:"Pismo bez potpisa",x:43,y:9}
     ],
-    done:()=>{G.flags.juraj_ho_done=true; addTheory("Zlatareva knjiga ima dva unosa za istu narudžbu.",true);}},
-  dorotea_ho:{bg:BG.dorotea,reward:"miniature",
-    title:"Dorotejina soba",
-    intro:"Soba čuva tragove zaboravljene smrti.",
+    done:()=>{ G.flags.ledger_done=true; if(!hasItem('city_coin')) addItem('city_coin'); addTheory("Zlatareva knjiga ima dva unosa za istu narudžbu - netko ju je platio dvaput.",true); }},
+  dolac_ho:{bg:IMG.market_search,reward:"necklace_fake",bonus:"locket",
+    title:"Trgovčeva tezga",
+    intro:"Na napuštenoj tezgi trgovac je sve ostavio. Pet predmeta krije priču. (Kompas pokazuje gdje tražiti.)",
     items:[
-      {id:"a",name:"Minijaturni portret",x:18,y:42},
-      {id:"b",name:"Slomljeni medaljon",x:60,y:55},
-      {id:"c",name:"Dnevnička stranica",x:42,y:48},
-      {id:"d",name:"Suhi cvijet",x:75,y:40},
-      {id:"e",name:"Pečatni prsten",x:30,y:62}
+      {id:"a",name:"Lažna ogrlica",x:51,y:60},
+      {id:"b",name:"Slomljeni medaljon",x:43,y:79},
+      {id:"c",name:"Razbacane perle",x:31,y:80},
+      {id:"d",name:"Trgovčev nož",x:64,y:80},
+      {id:"e",name:"Pocijepan račun",x:54,y:73}
     ],
-    done:()=>{G.flags.dorotea_done=true; addTheory("Dorotea je 1572. svjedočila nečemu što je platila životom.",true);}},
-  dolac_ho:{bg:BG.dolac,reward:"false_necklace",bonus:"guard_badge",
-    title:"Noćni Dolac",
-    intro:"Među napuštenim tezgama, trgovac je nešto ispustio.",
-    items:[
-      {id:"a",name:"Lažna ogrlica",x:24,y:50},
-      {id:"b",name:"Stražarska značka",x:62,y:58},
-      {id:"c",name:"Razbacane perle",x:44,y:46},
-      {id:"d",name:"Trgovčev nož",x:78,y:52},
-      {id:"e",name:"Pocijepan račun",x:36,y:64}
-    ],
-    done:()=>{G.flags.dolac_ho_done=true; addTheory("Lažna ogrlica je podmetnuta — prava nikad nije napustila grad.",true);}}
+    done:()=>{ G.flags.dolac_done=true; addTheory("Lažna ogrlica je podmetnuta - prava nikad nije napustila grad.",true); }}
 };
 
-/* ---------------------------------------------------------------------
-   JOURNAL QUESTS + CODEX
-   --------------------------------------------------------------------- */
+/* =====================================================================
+   JOURNAL + CODEX
+   ===================================================================== */
 const QUESTS = {
-  main_case:{title:"Sjena Griča",desc:"Otkrij tko stoji iza nestanka ogrlice — i zašto Gradec i Kaptol guraju u rat."},
-  crypt_chain:{title:"Zapečaćena kripta",desc:"Spoji željezni ključ i kaptolski tlocrt u Drugi ključ; otvori kriptu s obje brave."},
-  crypt_investigate:{title:"Tajne kripte",desc:"Pretraži kriptu Dorotee Kovačić i riješi zagonetku svijeća."},
-  forge_chain:{title:"Krivotvoreni dokument",desc:"Spoji pergament i pečat kraj kamina; suoči kanonika kopiranim pismom."},
-  guard_chain:{title:"Podmićeni stražar",desc:"Nađi značku i novčić, otkrij stražarevo ime i otvori Krvavi most."},
-  dolac_chain:{title:"Trgovac iz sjene",desc:"Prati trgovca na noćni Dolac i otkrij lažnu ogrlicu."}
+  main_case:{title:"NERO - sjena Griča",desc:"Otkrij tko koristi strah od vještica kao paravan za ubojstva i tko je insceniral krađu ogrlice."},
+  forge_chain:{title:"Krivotvoreni dokument",desc:"Spoji pergament i pečat; suoči Kaptol krivotvorenim pismom."},
+  dolac_chain:{title:"Trgovac iz sjene",desc:"Trgovac je pobjegao i ostavio tezgu. Pretraži je i otkrij lažnu ogrlicu i medaljon Dore Krupić."},
+  candle_chain:{title:"Svijeće nevinih",desc:"Pronađi skrivenu sobu pod Gričem i riješi zagonetku pet svijeća."},
+  bridge_chain:{title:"Obračun na mostu",desc:"Otkrij ime sjene i suoči se s njom na Krvavom mostu."}
 };
 
 const CODEX = {
-  marta:{title:"Grička Vještica",text:"Legenda stara koliko i kaldrma. Prvi šapat. Jedni je zovu zaštitnicom, drugi prokletstvom. Govori istinu — ali samo u zagonetkama."},
-  necklace:{title:"Ogrlica Dorotee Kovačić",text:"Nasljedstvo plemkinje umrle 1572. Predmet predaje između Gradeca i Kaptola — i okidač novog sukoba."},
-  cannon:{title:"Grički top",text:"Top s Lotrščaka puca svako jutro (povijesno: u podne). U ovoj priči svaki pucanj odzvanja kao presuda — odbrojavanje do istine."},
-  record:{title:"Tajni zapis 1572.",text:"Skriveni kaptolski zapis: ista ruka platila je krađu i progon. Tri stoljeća iste sjene nad Gričem."}
+  candle:{title:"Simbol svijeće",text:"Na svakom mjestu zločina gori svijeća. Isprva prijetnja, zatim trag, naposljetku istina. Što je Nera bliže rješenju, svijet postaje svjetliji."},
+  cannon:{title:"Grički top",text:"Top puca svaki dan u podne (povijesno). U ovoj priči svaki pucanj izvan podneva najavljuje novu žrtvu - presuda iz sjene."},
+  vjestica:{title:"Mudra starica s Kaptola",text:"Najstariji šapat brda. Vodi Neru, ali govori samo u zagonetkama. Progovara tek kad joj se pokaže pravi predmet."},
+  draskovic:{title:"Knez Drašković",text:"Plemić iznad obje strane. Koristi sukob Gradeca i Kaptola kao dimnu zavjesu, a strah od vještica kao nož."},
+  nera:{title:"Ime na svijeći",text:"Svaka svijeća nosi slovo sljedeće žrtve. Posljednji niz: N-E-R-A. Tada simbol prestaje biti trag i postaje prijetnja."}
 };
 
 /* =====================================================================
@@ -914,20 +947,19 @@ const CODEX = {
 let G = null;
 function newState(){
   return {
-    flags:{}, inventory:["intro_letter"], factions:{gradec:0,kaptol:0},
-    relationships:{stjepan:"Nepoznat",dorica:"Nepoznat",juraj:"Nepoznat",blaz:"Nepoznat"},
-    journal:[], theories:[], codex:["cannon","necklace"],
-    scene:"kamenita_vrata", topSeconds:9*60+47
+    flags:{}, inventory:["letter_intro"], factions:{gradec:0,kaptol:0},
+    relationships:{juraj:"Nepoznat",blaz:"Nepoznat"},
+    journal:[], theories:[], codex:["candle","cannon"],
+    scene:"crime_scene", act:1, topSeconds:11*60+40, light:0
   };
 }
 
-/* ---- helpers ---- */
 const $ = s=>document.querySelector(s);
 function fac(f){return G.factions[f];}
 function facAdd(f,n){
   G.factions[f]=Math.max(0,Math.min(100,G.factions[f]+n));
   renderFactions();
-  if(n>0) toast(`<span class='ti'>${f==='gradec'?'Gradec':'Kaptol'} ${n>0?'+':''}${n}</span>`);
+  if(n>0) toast(`<span class='ti'>${f==='gradec'?'Gradec':'Kaptol'} +${n}</span>`);
   else if(n<0) toast(`${f==='gradec'?'Gradec':'Kaptol'} ${n}`);
 }
 function rel(npc,status){G.relationships[npc]=status;}
@@ -937,7 +969,46 @@ function removeItem(id){ G.inventory=G.inventory.filter(x=>x!==id); renderInvent
 function unlockCodex(id){ if(CODEX[id]&&!G.codex.includes(id)){G.codex.push(id); toast(`<span class='ti'>Kodeks:</span> ${CODEX[id].title}`);} }
 function addJournal(qid){ if(!G.journal.find(q=>q.id===qid)){ G.journal.push({id:qid,done:false}); toast(`<span class='ti'>Nova misija:</span> ${QUESTS[qid].title}`);} }
 function completeJournal(qid){ const q=G.journal.find(q=>q.id===qid); if(q&&!q.done){q.done=true; toast(`<span class='ti'>Misija završena:</span> ${QUESTS[qid].title}`);} }
-function addTheory(text,confirmed){ if(!G.theories.find(t=>t.text===text)){G.theories.push({text,confirmed:!!confirmed});} }
+function addTheory(text,confirmed){
+  const existing=G.theories.find(t=>t.text===text);
+  if(!existing){ G.theories.push({text,confirmed:!!confirmed}); raiseLight(); }
+  else if(confirmed && !existing.confirmed){ existing.confirmed=true; raiseLight(); }
+}
+/* NERO: the world brightens as truth is uncovered */
+function raiseLight(){ G.light=Math.min(1, (G.theories.filter(t=>t.confirmed).length)/8); applyLight(); }
+function applyLight(){ const d=$("#scene-dark"); if(d) d.style.opacity = String(Math.max(0,(0.55 - G.light*0.55))); }
+
+/* =====================================================================
+   STORY PROGRESSION
+   ===================================================================== */
+function checkCrimeDone(){
+  if(hasItem('candle_wax')){ G.flags.crime_done=true; toast("Pregledala si mjesto zločina. Potraži vješticu."); renderScene(); }
+}
+function maybeAct2(){
+  if(G.act<2){ G.act=2; }
+}
+function maybeAct3(){
+  if(G.flags.has_necklace && G.flags.candle_solved && G.act<3){
+    G.act=3; addJournal("bridge_chain");
+  }
+}
+/* Act cards play when the player first ARRIVES at a location of that act,
+   not the moment the flag flips (which would interrupt and bounce them back). */
+const SCENE_ACTNUM={crime_scene:1,alley:1,goldsmith:2,archive:2,dolac:2,crypt:2,candle_room:2,bridge:3};
+function maybeShowActCard(sceneId){
+  const n=SCENE_ACTNUM[sceneId];
+  if(!n || n<2) return;
+  if(G.act<n) return;
+  if(G.flags['card'+n+'_shown']) return;
+  G.flags['card'+n+'_shown']=true;
+  setTimeout(()=>showActCard(n),250);
+}
+function maybeTwist(){
+  if(!G.flags.twist_seen){
+    G.flags.twist_seen=true; unlockCodex('nera');
+    setTimeout(()=>showActCard(4),600);
+  }
+}
 
 /* =====================================================================
    RENDER
@@ -948,22 +1019,13 @@ function renderScene(){
   const frame = $("#scene-frame");
   scene.style.opacity=0;
   setTimeout(()=>{
-    frame.className = (sc.mode==='band') ? 'band' : 'fill';
-    if(sc.mode==='band'){
-      const by = (sc.bandY!=null) ? sc.bandY : 50;
-      frame.style.top = by+'%';
-      frame.style.transform = 'translateY(-50%)';
-    } else {
-      frame.style.top = '';
-      frame.style.transform = '';
-    }
     const img = $("#scene-img");
-    img.src = encodeURI(sc.bg);
-    img.style.objectPosition = (sc.mode==='band') ? 'center' : (sc.bgPos||'center');
+    img.src = encodeURI(typeof sc.bg==='function'?sc.bg():sc.bg);
+    img.style.objectPosition = sc.bgPos||'center';
     scene.style.opacity=1;
-    // hotspots (positioned relative to the art frame)
     [...frame.querySelectorAll('.hotspot')].forEach(h=>h.remove());
     sc.hotspots.forEach(hs=>{
+      if(hs.show && !hs.show()) return;
       const el=document.createElement('div');
       el.className='hotspot'+(hs.glow&&hs.glow()?' glow':'');
       el.style.left=hs.x+'%'; el.style.top=hs.y+'%'; el.style.width=hs.w+'%'; el.style.height=hs.h+'%';
@@ -971,18 +1033,15 @@ function renderScene(){
       el.onclick=(e)=>{ e.stopPropagation(); handleHotspot(hs); };
       frame.appendChild(el);
     });
+    applyLight();
   },180);
-  // top bar
+  $("#loc-act").textContent = ({1:"Čin I - Nestanak",2:"Čin II - Istraga",3:"Čin III - Obračun"}[G.act]) || sc.act || "";
   $("#loc-name").textContent = sc.name;
   $("#loc-quest").innerHTML = "<b>Cilj:</b> "+ (typeof sc.quest==='function'?sc.quest():sc.quest||"");
 }
 
 function handleHotspot(hs){
-  // using an item?
-  if(selectedItem){
-    tryUseOn(selectedItem, hs); 
-    return;
-  }
+  if(selectedItem){ tryUseOn(selectedItem, hs); return; }
   if(hs.cond && !hs.cond()){ toast(hs.denied||"Ne možeš to sada."); return; }
   if(hs.type==='dialogue'){ openDialogue(hs.dialogue); return; }
   if(hs.type==='transition'){ go(hs.to); return; }
@@ -992,11 +1051,11 @@ function handleHotspot(hs){
 
 function go(sceneId){
   G.scene=sceneId; selectedItem=null; renderInventory(); renderScene(); autosave();
+  maybeShowActCard(sceneId);
 }
 
 function renderInventory(){
   const bar=$("#inv-slots"); bar.innerHTML="";
-  const max=Math.max(4, G.inventory.length);
   for(let i=0;i<Math.min(8,Math.max(4,G.inventory.length));i++){
     const id=G.inventory[i];
     const slot=document.createElement('div');
@@ -1005,9 +1064,7 @@ function renderInventory(){
       slot.innerHTML=ITEMS[id].icon+`<span class='qty'>1</span>`;
       slot.title=ITEMS[id].name;
       slot.onclick=()=>selectItem(id);
-    } else {
-      slot.className='slot empty';
-    }
+    } else slot.className='slot empty';
     bar.appendChild(slot);
   }
 }
@@ -1029,36 +1086,36 @@ function renderFactions(){
    COMBINE / USE
    ===================================================================== */
 const COMBOS=[
-  {a:"iron_key",b:"kaptol_blueprint",result:"second_key",msg:"Po tlocrtu skuješ drugu bradicu. Nastaje Drugi ključ."},
-  {a:"blank_parchment",b:"wax_seal",result:"copied_letter",consume:true,
-    cond:()=>true,
-    msg:"Utiskuješ kaptolski pečat u pergament. Krivotvoreno pismo je gotovo."}
+  {a:"blank_parchment",b:"wax_seal",result:"forged_letter",
+    msg:"Utiskuješ kaptolski pečat u pergament. Krivotvoreno pismo je gotovo - dokaz da netko piše u tuđe ime.",
+    after:()=>addJournal("forge_chain")},
+  {a:"glagol_manuscript",b:"candle_wax",result:"crypt_key",
+    msg:"Po glagoljskom rukopisu čitaš znak s voska - polumjesec. Isti znak otvara skrivenu sobu. Skuješ ključ kripte.",
+    after:()=>addJournal("candle_chain")}
 ];
 function tryCombine(a,b){
   const c=COMBOS.find(x=>(x.a===a&&x.b===b)||(x.a===b&&x.b===a));
   if(!c){ toast("Ta dva predmeta ne idu zajedno."); return false; }
-  if(c.cond && !c.cond()){ toast("Još nije vrijeme za to."); return false; }
   removeItem(c.a); removeItem(c.b); addItem(c.result);
   examine("Spojeno", c.msg);
-  if(c.result==="copied_letter") addJournal("forge_chain");
+  if(c.after) c.after();
   selectedItem=null; $("#stage").classList.remove('using'); renderInventory();
   renderOverlayInventory();
   return true;
 }
 
-const USES=[
-  {item:"copied_letter",scene:"kaptol_int",hotspot:"stjepan",run(){ openDialogue("stjepan_intro"); }},
-];
 function tryUseOn(item, hs){
-  // combine if clicking another inventory hotspot -- handled elsewhere
   selectedItem=null; $("#stage").classList.remove('using'); renderInventory();
-  // crypt door with keys
-  if(hs.id==='crypt_door' && (item==='second_key'||item==='iron_key')){ hs.action(); return; }
-  if(hs.id==='fireplace'){ hs.action(); return; }
-  if(hs.id==='guard' && (item==='guard_badge'||item==='city_coin')){ openDialogue("guard_bridge"); return; }
-  if(hs.id==='stjepan' && item==='copied_letter'){ openDialogue("stjepan_intro"); return; }
-  const u=USES.find(u=>u.item===item && u.hotspot===hs.id);
-  if(u){ u.run(); return; }
+  if(hs.id==='door' && item==='crypt_key'){ go("candle_room"); return; }
+  if(hs.id==='canon' && item==='forged_letter'){ openDialogue("canon_intro"); return; }
+  if(hs.id==='draskovic' && item==='city_coin'){
+    if(!G.flags.coin_shown){
+      G.flags.coin_shown=true; removeItem('city_coin');
+      addTheory("Drašković kupuje šutnju gradskom kovanicom - mreža mita seže do straže i suda.",true);
+    }
+    examine("Gradski novčić","Bacaš mu novčić pred noge. '(Ovo plaća tvoju šutnju, zar ne?)' Drašković se hladno nasmije: 'Pametno. Svatko ima cijenu - osim, čini se, tebe.' Potvrdio je vlastitu mrežu mita.");
+    return;
+  }
   toast(`${ITEMS[item].name} ne djeluje na: ${hs.label}.`);
 }
 
@@ -1068,7 +1125,7 @@ function tryUseOn(item, hs){
 let DLG=null;
 function openDialogue(id){
   const d=DIALOGUES[id];
-  if(!d){return;}
+  if(!d) return;
   if(d.cond && !d.cond()){ toast("Ta osoba ne želi sada razgovarati."); return; }
   DLG={def:d,node:d.start};
   $("#dialogue").style.display="block";
@@ -1077,14 +1134,14 @@ function openDialogue(id){
 }
 function showNode(){
   const d=DLG.def, n=d.nodes[DLG.node];
-  if(n.effect) { n.effect(); renderFactions(); }
+  if(n.effect){ n.effect(); renderFactions(); }
   const sp=SPEAKERS[d.speaker];
-  $("#dlg-portrait").innerHTML=`<img src="${(d.portrait?d.portrait():sp.portrait)}" style="width:100%;height:100%;object-fit:cover">`;
+  const portrait = d.portrait?d.portrait():sp.portrait;
+  $("#dlg-portrait").innerHTML=`<img src="${encodeURI(portrait)}" alt="">`;
   $("#dlg-speaker").textContent=sp.name;
   $("#dlg-speaker").style.color=sp.color;
   $("#dlg-text").textContent= typeof n.text==='function'?n.text():n.text;
   const cbox=$("#dlg-choices"); cbox.innerHTML="";
-  $("#dlg-continue").style.display="none";
   if(n.end){
     const b=document.createElement('button');
     b.className='choice'; b.innerHTML=`<span class='cnum'>✕</span> [Kraj razgovora]`;
@@ -1096,7 +1153,6 @@ function showNode(){
   choices.forEach(c=>{
     const b=document.createElement('button');
     b.className='choice';
-    const tagged = /^\[/.test(c.t);
     b.innerHTML=`<span class='cnum'>${num++}</span> ${c.t}`;
     b.onclick=()=>chooseDialogue(c);
     cbox.appendChild(b);
@@ -1143,7 +1199,7 @@ function openPanel(which){
   body.innerHTML="";
   if(which==='journal') body.appendChild(buildJournal());
   if(which==='map') body.appendChild(buildMap());
-  if(which==='inventory') { ov.dataset.kind='inventory'; body.appendChild(buildInventory()); }
+  if(which==='inventory') body.appendChild(buildInventory());
   if(which==='codex') body.appendChild(buildCodex());
   ov.style.display="block";
 }
@@ -1167,11 +1223,11 @@ function buildJournal(){
   const relH=document.createElement('div');
   relH.innerHTML="<div class='col-h' style='margin-top:18px'>Odnosi</div>";
   const grid=document.createElement('div'); grid.className='rel-grid';
-  [['stjepan','Kanonik Stjepan'],['dorica','Magistra Dorica'],['juraj','Zlatar Juraj'],['blaz','Redovnik Blaž']].forEach(([k,name])=>{
+  [['juraj','Zlatar Juraj'],['blaz','Redovnik Blaž']].forEach(([k,name])=>{
     const c=document.createElement('div'); c.className='rel-card';
     const stat=G.relationships[k]||'Nepoznat';
-    const col= stat==='Prijatan'||stat==='Zahvalan'? '#7fae7f' : stat==='Sumnjičav'||stat==='Neprijatan'? 'var(--kaptol)':'var(--text2)';
-    c.innerHTML=`<div class='rel-portrait'><img src='${SPEAKERS[k].portrait}' style='width:100%;height:100%;object-fit:cover'></div>
+    const col= /Savez|Suradn|Zahval/.test(stat)? '#7fae7f' : /Sumnj|Neprijat/.test(stat)? 'var(--kaptol)':'var(--text2)';
+    c.innerHTML=`<div class='rel-portrait'><img src='${encodeURI(SPEAKERS[k].portrait)}' alt=''></div>
       <div class='rel-name'>${name}</div><div class='rel-stat' style='color:${col}'>${stat}</div>`;
     grid.appendChild(c);
   });
@@ -1183,14 +1239,15 @@ function buildJournal(){
 
 function buildMap(){
   const d=document.createElement('div'); d.id='map-screen';
-  d.style.backgroundImage=`url("${encodeURI(IMG.worldmap)}")`;
+  d.style.backgroundImage=`url("${encodeURI(IMG.map)}")`;
   const nodes=[
-    {id:"kamenita_vrata",name:"Kamenita vrata",x:30,y:40},
-    {id:"markov_trg",name:"Markov trg",x:55,y:38},
-    {id:"zlatareva_radionica",name:"Zlatareva radionica",x:50,y:70,lock:()=>!G.flags.met_juraj&&G.scene!=='markov_trg'},
-    {id:"kaptol_ext",name:"Kaptol",x:74,y:50},
-    {id:"dolac",name:"Dolac",x:86,y:66,lock:()=>fac('kaptol')<1&&!G.flags.met_juraj?false:false},
-    {id:"krvavi_most",name:"Krvavi most",x:22,y:64,lock:()=>!G.flags.bridge_open}
+    {id:"crime_scene",name:"Zapečaćena soba",x:46,y:34},
+    {id:"alley",name:"Kamenita vrata",x:30,y:42},
+    {id:"goldsmith",name:"Zlatareva radionica",x:24,y:64,lock:()=>G.act<2},
+    {id:"archive",name:"Kaptolski arhiv",x:62,y:40,lock:()=>G.act<2},
+    {id:"dolac",name:"Dolac",x:78,y:44,lock:()=>G.act<2},
+    {id:"crypt",name:"Kripta pod Gričem",x:54,y:60,lock:()=>!G.flags.maps_overlaid},
+    {id:"bridge",name:"Krvavi most",x:62,y:70,lock:()=>G.act<3}
   ];
   nodes.forEach(n=>{
     const locked = n.lock && n.lock();
@@ -1202,7 +1259,7 @@ function buildMap(){
     d.appendChild(el);
   });
   const legend=document.createElement('div');
-  legend.style.cssText="position:absolute;right:16px;top:16px;background:rgba(10,14,22,.85);border:1px solid var(--line);padding:12px 16px;border-radius:6px;max-width:230px";
+  legend.style.cssText="position:absolute;right:16px;top:16px;background:rgba(10,14,22,.85);border:1px solid var(--line);padding:12px 16px;border-radius:6px;max-width:240px";
   legend.innerHTML=`<div class='col-h'>Putuj</div><p class='small'>Klikni lokaciju za brzo putovanje. Zaključana mjesta otključavaju se napretkom istrage.</p>`;
   d.appendChild(legend);
   return d;
@@ -1211,8 +1268,7 @@ function buildMap(){
 function buildInventory(){
   const wrap=document.createElement('div');
   const grid=document.createElement('div'); grid.className='inv-grid';
-  const total=12;
-  for(let i=0;i<total;i++){
+  for(let i=0;i<12;i++){
     const id=G.inventory[i];
     const c=document.createElement('div');
     if(id){
@@ -1223,10 +1279,10 @@ function buildInventory(){
     grid.appendChild(c);
   }
   wrap.appendChild(grid);
-  const det=document.createElement('div'); det.className='inv-detail'; det.id='inv-detail';
+  const det=document.createElement('div'); det.className='inv-detail';
   if(ovSelected){
     det.innerHTML=`<h3>${ITEMS[ovSelected].name}</h3><p>${ITEMS[ovSelected].desc}</p>
-      <div class='combine-hint'>Klikni drugi predmet da pokušaš spajanje. (Trenutno odabrano za spajanje: <span class='gold'>${ITEMS[ovSelected].name}</span>)</div>`;
+      <div class='combine-hint'>Klikni drugi predmet da pokušaš spajanje. (Odabrano: <span class='gold'>${ITEMS[ovSelected].name}</span>)</div>`;
   } else {
     det.innerHTML=`<p class='small'>Klikni predmet za opis. Klikni dva predmeta zaredom da ih pokušaš spojiti.</p>`;
   }
@@ -1236,10 +1292,8 @@ function buildInventory(){
 let ovSelected=null, ovCombineFirst=null;
 function ovInvClick(id){
   if(ovCombineFirst && ovCombineFirst!==id){
-    const ok=tryCombine(ovCombineFirst,id);
-    ovCombineFirst=null; ovSelected=null;
-    renderOverlayInventory();
-    return;
+    tryCombine(ovCombineFirst,id);
+    ovCombineFirst=null; ovSelected=null; renderOverlayInventory(); return;
   }
   if(ovSelected===id){ ovSelected=null; ovCombineFirst=null; }
   else { ovSelected=id; ovCombineFirst=id; }
@@ -1253,7 +1307,7 @@ function renderOverlayInventory(){
 
 function buildCodex(){
   const wrap=document.createElement('div'); wrap.className='codex-list';
-  wrap.innerHTML="<div class='col-h'>Historijski i mitski zapisi</div>";
+  wrap.innerHTML="<div class='col-h'>Povijesni i mitski zapisi</div>";
   G.codex.forEach(id=>{
     const c=CODEX[id];
     const el=document.createElement('div'); el.className='cx';
@@ -1271,18 +1325,17 @@ let HOstate=null;
 function startHO(id){
   const def=HO[id];
   HOstate={id,def,found:[]};
-  $("#ho-bg").style.backgroundImage=`url("${def.bg}")`;
+  $("#ho-bg").style.backgroundImage=`url("${encodeURI(def.bg)}")`;
   $("#ho-feedback").textContent=def.intro;
   const list=$("#ho-items"); list.innerHTML="";
   def.items.forEach(it=>{
     const row=document.createElement('div'); row.className='hoi'; row.id="hoi-"+it.id;
     row.textContent="• "+it.name; list.appendChild(row);
   });
-  // place clickable targets
   [...document.querySelectorAll('.ho-target')].forEach(e=>e.remove());
   def.items.forEach(it=>{
     const t=document.createElement('div'); t.className='ho-target'; t.id="hot-"+it.id;
-    t.style.left=it.x+'%'; t.style.top=it.y+'%'; t.style.width='6%'; t.style.height='9%';
+    t.style.left=it.x+'%'; t.style.top=it.y+'%'; t.style.width='8%'; t.style.height='11%';
     t.onclick=()=>foundHO(it);
     $("#ho-screen").appendChild(t);
   });
@@ -1294,43 +1347,87 @@ function foundHO(it){
   $("#hoi-"+it.id).classList.add('found');
   const t=$("#hot-"+it.id);
   const hit=document.createElement('div'); hit.className='ho-hit';
-  hit.style.left=t.style.left; hit.style.top=t.style.top; hit.style.width='6%'; hit.style.height='9%';
+  hit.style.left=t.style.left; hit.style.top=t.style.top; hit.style.width='8%'; hit.style.height='11%';
   $("#ho-screen").appendChild(hit); setTimeout(()=>hit.remove(),700);
-  t.onclick=null;
+  t.onclick=null; t.classList.add('found-x');
   $("#ho-feedback").textContent=`Pronađeno: ${it.name} (${HOstate.found.length}/${HOstate.def.items.length})`;
   if(HOstate.found.length===HOstate.def.items.length){ setTimeout(finishHO,700); }
 }
 function finishHO(){
   const def=HOstate.def;
   $("#ho-screen").style.display="none";
-  [...document.querySelectorAll('.ho-target')].forEach(e=>e.remove());
+  [...document.querySelectorAll('.ho-target,.ho-pulse')].forEach(e=>e.remove());
   if(def.reward) addItem(def.reward);
   if(def.bonus) addItem(def.bonus);
   if(def.done) def.done();
-  // chain bookkeeping
-  if(def.bonus==='wax_seal'||def.reward==='second_ledger'){ /* forge materials */ }
-  if(def.bonus==='guard_badge'){ addJournal("guard_chain"); }
   HOstate=null; renderScene(); autosave();
-  examine(def.title+" — gotovo", "Pronašao si sve. "+(def.reward?("Dobiveno: "+ITEMS[def.reward].name+(def.bonus?(" i "+ITEMS[def.bonus].name):"")+"."):""));
+  examine(def.title+" - gotovo", "Pronašla si sve. "+(def.reward?("Dobiveno: "+ITEMS[def.reward].name+(def.bonus?(" i "+ITEMS[def.bonus].name):"")+"."):""));
 }
-$("#ho-exit").onclick=()=>{ $("#ho-screen").style.display="none"; [...document.querySelectorAll('.ho-target')].forEach(e=>e.remove()); HOstate=null; };
+$("#ho-exit").onclick=()=>{ $("#ho-screen").style.display="none"; [...document.querySelectorAll('.ho-target,.ho-pulse')].forEach(e=>e.remove()); HOstate=null; };
+$("#ho-hint").onclick=()=>{
+  if(!HOstate) return;
+  const left=HOstate.def.items.filter(it=>!HOstate.found.includes(it.id));
+  if(!left.length) return;
+  left.forEach(it=>{
+    const p=document.createElement('div'); p.className='ho-pulse';
+    p.style.left=it.x+'%'; p.style.top=it.y+'%'; p.style.width='8%'; p.style.height='11%';
+    $("#ho-screen").appendChild(p); setTimeout(()=>p.remove(),1500);
+  });
+  $("#ho-feedback").textContent="Kompas pokazuje preostale tragove...";
+};
 
 /* =====================================================================
-   CANDLE LOGIC PUZZLE  (Svijeće nevinih)
+   MAP OVERLAY PUZZLE  (ubojstva = svijeća, optužbe = križ)
+   ===================================================================== */
+function startMapPuzzle(){
+  const ov=$("#overlay"); $("#ov-title").textContent="Preklopi karte";
+  const body=$("#ov-body"); body.innerHTML="";
+  const intro=document.createElement('div'); intro.className='center-narr';
+  intro.innerHTML=`<p>Pred tobom dvije karte Zagreba. Na jednoj su sva ubojstva, na drugoj sve optužbe za vještičarenje.</p>
+    <p class='small'>Što vidiš kad ih preklopiš?</p>`;
+  body.appendChild(intro);
+  const opts=[
+    {t:"Mjesta ubojstava tvore oblik svijeće, optužbe oblik križa - sjecište pokazuje tajnu sobu pod Gričem.",ok:true},
+    {t:"Sve se događa nasumično; nema obrasca.",ok:false},
+    {t:"Ubojstva su samo na Kaptolu, optužbe samo na Gradecu.",ok:false}
+  ];
+  const box=document.createElement('div'); box.style.maxWidth='620px'; box.style.margin='10px auto';
+  opts.forEach(o=>{
+    const b=document.createElement('button'); b.className='choice'; b.style.marginBottom='10px';
+    b.innerHTML=`<span class='cnum'>◇</span> ${o.t}`;
+    b.onclick=()=>{
+      if(o.ok){
+        G.flags.maps_overlaid=true;
+        addTheory("Ubojstva tvore svijeću, optužbe križ - sjecište je tajna soba pod Gričem.",true);
+        completeJournal("main_case");
+        toast("<span class='ti'>Otkrila si lokaciju tajne sobe.</span>");
+        $("#overlay").style.display="none"; renderScene(); autosave();
+      } else {
+        toast("Ne. Pogledaj ponovno obrazac mjesta.");
+      }
+    };
+    box.appendChild(b);
+  });
+  body.appendChild(box);
+  ov.style.display="block";
+}
+
+/* =====================================================================
+   CANDLE LOGIC PUZZLE  (Svijeće nevinih)  - solution: candle II (index 1)
    ===================================================================== */
 const CANDLE_NOTES=[
-  "Žena označena križem nije nevina.",
-  "Istina nije u prvoj ni petoj svijeći.",
-  "Svijeća V govori istinu.",
-  "Svijeća II laže.",
-  "Svijeća III laže."
+  "Žena označena križem nije nevina.",            // I
+  "Istina nije u prvoj ni petoj svijeći.",         // II  (TRUE)
+  "Svijeća V govori istinu.",                      // III
+  "Svijeća II laže.",                              // IV
+  "Svijeća III laže."                              // V
 ];
 function startCandlePuzzle(){
   const ov=$("#overlay"); $("#ov-title").textContent="Svijeće nevinih";
   const body=$("#ov-body"); body.innerHTML="";
   const intro=document.createElement('div'); intro.className='center-narr';
   intro.innerHTML=`<p>"Pet je svjedočilo. Tri su lagale. Jedna je vidjela istinu. Pronađi njezin plamen."</p>
-    <p class='small'>Trag uz natpis: <span class='gold'>"Samo jedna govori istinu."</span> Zapali svijeću čija je poruka jedina istinita.</p>`;
+    <p class='small'>Trag: <span class='gold'>"Samo jedna govori istinu."</span> Zapali svijeću čija je poruka jedina istinita.</p>`;
   body.appendChild(intro);
   const row=document.createElement('div'); row.className='candle-row';
   for(let i=0;i<5;i++){
@@ -1341,27 +1438,24 @@ function startCandlePuzzle(){
   }
   body.appendChild(row);
   const fb=document.createElement('p'); fb.className='small'; fb.id='cand-fb'; fb.style.textAlign='center';
-  fb.textContent="Razmisli o proturječjima. Logika je jedini ključ.";
+  fb.textContent="Razmisli o proturječjima. Samo jedna tvrdnja smije ostati istinita.";
   body.appendChild(fb);
   ov.style.display="block";
 }
 function lightCandle(i){
   document.querySelectorAll('.candle').forEach(c=>c.classList.remove('lit'));
   $("#cand-"+i).classList.add('lit');
-  if(i===1){ // Candle II (index 1) is the truth
-    $("#cand-fb").innerHTML="<span class='gold'>Vosak se topi i otkriva urezani simbol — polumjesec. Mehanizam u zidu škljocne.</span>";
+  if(i===1){
+    $("#cand-fb").innerHTML="<span class='gold'>Vosak se topi i otkriva urezani polumjesec. Mehanizam u zidu škljocne.</span>";
     if(!G.flags.candle_solved){
       G.flags.candle_solved=true;
-      addTheory("Druga svijeća (Dorotea) jedina je govorila istinu — i platila je.",true);
-      completeJournal("crypt_investigate");
-      unlockCodex("record");
-      facAdd('kaptol',5);
-      toast("<span class='ti'>Zagonetka riješena.</span> Otkriva se simbol polumjeseca.");
-      setTimeout(()=>{ examine("Skriveni mehanizam","Iza druge svijeće otvara se pretinac. Unutra — prava ogrlica Dorotee Kovačić, skrivena ovdje tri stoljeća. Netko je htio da je svijet smatra ukradenom.");
-        if(!hasItem('necklace_real')) addItem('necklace_real'); G.flags.has_real_necklace=true; }, 400);
+      addTheory("Druga svijeća jedina je govorila istinu - svjedokinja koja je platila životom.",true);
+      completeJournal("candle_chain"); unlockCodex('candle'); facAdd('kaptol',5);
+      toast("<span class='ti'>Zagonetka riješena.</span>");
+      setTimeout(()=>{ $("#overlay").style.display="none"; renderScene(); maybeAct3(); },900);
     }
   } else {
-    $("#cand-fb").textContent="Plamen zatreperi i ugasi se. Ova poruka vodi u proturječje. Pokušaj ponovno.";
+    $("#cand-fb").textContent="Plamen zatreperi i ugasi se. Ta poruka vodi u proturječje. Pokušaj ponovno.";
   }
 }
 
@@ -1369,26 +1463,28 @@ function lightCandle(i){
    FINALE / ENDINGS
    ===================================================================== */
 function openFinale(){
-  const ov=$("#overlay"); $("#ov-title").textContent="Krvavi most — obračun";
+  const ov=$("#overlay"); $("#ov-title").textContent="Krvavi most - obračun";
   const body=$("#ov-body"); body.innerHTML="";
   const intro=document.createElement('div'); intro.className='center-narr';
-  intro.innerHTML="<p>Magla guta most. U rukama nosiš sve što si skupio. Sada biraš kakvu pravdu ovaj grad zaslužuje.</p>";
+  intro.innerHTML="<p>Magla se diže. U rukama nosiš sve što si skupila. Sada biraš kakvu pravdu ovaj grad zaslužuje.</p>";
   body.appendChild(intro);
 
+  const evid = (hasItem('forged_letter')?1:0)+(hasItem('ledger')?1:0)+(hasItem('necklace_real')?1:0)+(hasItem('locket')?1:0)+(G.flags.knows_villain?1:0);
+
   const endings=[
-    {id:"diplomat",title:"Diplomat",
-      avail:()=> G.flags.has_real_necklace || hasItem('false_necklace'),
-      label:"Tiho vrati ogrlicu i premjesti krivca, bez skandala.",
-      sub:"Zagreb ostaje stabilan."},
-    {id:"reckoning",title:"Obračun",
-      avail:()=> fac('kaptol')<30 && (G.flags.crypt_open||G.flags.secret_record),
-      label:"Razotkrij sve javno, ovdje na mostu. Neka istina raskoli grad.",
-      sub:"Zahtijeva kriptni dokaz i Kaptol < 30.",},
-    {id:"witch",title:"Vještičin dogovor",
-      avail:()=> G.flags.candle_solved && G.flags.has_real_necklace && G.flags.dorotea_done && G.flags.canon_confronted,
-      label:"Vrati ogrlicu grobu, zatvori istragu bez krivca — kako je Marta tražila.",
-      sub:"Zahtijeva sve tri Martine niti."},
-    {id:"leave",title:"Tihi odlazak",
+    {id:"light",title:"Svjetlo istine",
+      avail:()=> G.flags.has_necklace && G.flags.candle_solved && evid>=4,
+      label:"Javno razotkrij cijelu mrežu - ovdje, na mostu, pred oba grada.",
+      sub:"Treba: ogrlica, riješene svijeće i 4+ dokaza."},
+    {id:"quiet",title:"Tiha pravda",
+      avail:()=> G.flags.knows_villain && evid>=2,
+      label:"Smijeni Draškovića bez skandala, spasi optužene žene, sačuvaj mir.",
+      sub:"Treba: ime krivca i 2+ dokaza."},
+    {id:"witch",title:"Staričin dogovor",
+      avail:()=> G.flags.has_necklace && G.flags.candle_solved && hasItem('locket'),
+      label:"Vrati ogrlicu grobu i zatvori slučaj bez krivca - kako je starica tražila.",
+      sub:"Treba: ogrlica, svijeće i medaljon."},
+    {id:"dark",title:"Tama (odlazak)",
       avail:()=> true,
       label:"Okreni leđa svemu i napusti Zagreb prije zore.",
       sub:"Uvijek dostupno."}
@@ -1396,8 +1492,7 @@ function openFinale(){
   endings.forEach(e=>{
     const av=e.avail();
     const b=document.createElement('button');
-    b.className='choice'; b.style.marginBottom='10px'; b.disabled=!av;
-    b.style.opacity=av?1:.45;
+    b.className='choice'; b.style.marginBottom='10px'; b.disabled=!av; b.style.opacity=av?1:.45;
     b.innerHTML=`<span class='cnum'>${av?'◆':'✕'}</span> <div><div class='gold'>${e.title}</div><div style='font-size:13px'>${e.label}</div><div class='ctag'>${e.sub}</div></div>`;
     if(av) b.onclick=()=>showEnding(e.id);
     body.appendChild(b);
@@ -1406,35 +1501,51 @@ function openFinale(){
 }
 
 const ENDING_TEXT={
-  diplomat:{title:"DIPLOMAT",sub:"Tiha pravda",bg:IMG.bridge,
-    body:`<p>Ogrlica se vraća bez riječi. Pravi krivac — onaj komu je rat donosio vlast — tiho nestaje iz grada, premješten daleko od Griča.</p>
-      <p>Gradec i Kaptol nastavljaju mrziti se kao i prije, ali bez krvi. Most ostaje cijel.</p>
-      <p>Oni koji znaju istinu, znaju i tvoje ime — i preziru te zbog šutnje. Ali Zagreb spava. Zasad.</p>`},
-  reckoning:{title:"OBRAČUN",sub:"Istina po cijenu mira",bg:IMG.nero,
-    body:`<p>Na sredini mosta podižeš kopirano pismo, ledger i kriptni dokaz. Glasovi se dižu. Kaptol i Gradec okreću se jedan protiv drugoga — i protiv onih u sjeni koji su ih huškali.</p>
-      <p>Sukob plamti. Ali Martino ime — i ime Dorotee Kovačić — napokon su rehabilitirani. Tri stoljeća laži gore zajedno s mostom.</p>
-      <p>Pravda je glasna. I skupa.</p>`},
-  witch:{title:"VJEŠTIČIN DOGOVOR",sub:"Mir s mrtvima",bg:BG.crypt_candles,
-    body:`<p>Vraćaš pravu ogrlicu u sarkofag, među pet svijeća. Druga svijeća — Dorotejina — gori najjače.</p>
-      <p>Marta se pojavljuje posljednji put. "Ispunio si tri niti," kaže. "Grad neće znati istinu, ali kamen će je pamtiti — i ja s njim."</p>
-      <p>Istraga se zatvara bez krivca. Nema pobjede ni za Gradec ni za Kaptol. Samo tišina, i jedan plamen koji više nikad neće dogorjeti.</p>`},
-  leave:{title:"TIHI ODLAZAK",sub:"Stranac odlazi",bg:IMG.cover,
-    body:`<p>Prije nego top zapuca, već si na cesti izvan zidina. Pisma, ključevi, dokazi — sve ostaje za tobom.</p>
-      <p>Grad gori malo bez tebe — ali gori. Negdje iza, na Lotrščaku, plamen svijeće ne miče se na vjetru.</p>
-      <p>Neke sjene nije tvoje da rasvijetliš.</p>`}
+  light:{title:"NERO ZAVRŠAVA SVJETLOM",sub:"Istina razotkrivena",bg:IMG.candle_room,
+    body:`<p>Na sredini mosta podižeš krivotvoreno pismo, zlatarevu knjigu, medaljon Dore Krupić i pravu ogrlicu. Grad zašuti. Knez Drašković nema kamo.</p>
+      <p>U skrivenoj sobi pod Gričem, jedna po jedna svijeća se pali - po jedna za svaku nevino stradalu ženu. Imena im se napokon izgovaraju naglas. Mrak nestaje.</p>
+      <p>Gradec i Kaptol prvi put gledaju u istog krivca, a ne jedan u drugoga. Nera je iz tame iznijela svjetlo.</p>`},
+  quiet:{title:"TIHA PRAVDA",sub:"Mir bez skandala",bg:IMG.bridge,
+    body:`<p>Drašković tiho nestaje iz grada - premješten, smijenjen, zaboravljen. Optužene žene puštene su; progon staje.</p>
+      <p>Grad nikad ne dozna punu istinu, ali krv prestaje teći. Most ostaje cijel.</p>
+      <p>Oni koji znaju, znaju i tvoje ime. Neki te poštuju. Neki preziru zbog šutnje. Zagreb spava - zasad.</p>`},
+  witch:{title:"STARIČIN DOGOVOR",sub:"Mir s mrtvima",bg:IMG.candle_room,
+    body:`<p>Vraćaš pravu ogrlicu u tamu sobe svijeća, među plamenove. Mudra starica pojavljuje se posljednji put: "Učinila si što je trebalo. Grad neće znati, ali kamen pamti - i ja s njim."</p>
+      <p>Slučaj se zatvara bez imena krivca. Nema pobjede za Gradec ni za Kaptol. Samo tišina i plamen koji više nikad neće dogorjeti.</p>`},
+  dark:{title:"TAMA",sub:"Ime na posljednjoj svijeći",bg:IMG.candle_clue,
+    body:`<p>Prije nego top zapuca, već si na cesti izvan zidina. Dokazi, ključevi, pisma - sve ostaje za tobom.</p>
+      <p>Negdje pod Gričem, u sobi svijeća, pali se još jedna. Na njoj urezana četiri slova: N - E - R - A.</p>
+      <p>Neke sjene nije tvoje da rasvijetliš. A neke te ne puste otići.</p>`}
 };
 function showEnding(id){
   $("#overlay").style.display="none";
   const e=ENDING_TEXT[id];
   const end=$("#ending");
-  end.style.backgroundImage=`url("${e.bg.startsWith('data:')?e.bg:encodeURI(e.bg)}")`;
+  end.style.backgroundImage=`url("${encodeURI(e.bg)}")`;
   $("#end-title").textContent=e.title;
   $("#end-sub").textContent=e.sub;
-  $("#end-body").innerHTML=e.body+`<p class='small' style='margin-top:24px'>Gradec ${G.factions.gradec} · Kaptol ${G.factions.kaptol} · Teorija potvrđenih: ${G.theories.filter(t=>t.confirmed).length}</p>`;
+  $("#end-body").innerHTML=e.body+`<p class='small' style='margin-top:24px'>Gradec ${G.factions.gradec} · Kaptol ${G.factions.kaptol} · Potvrđenih teorija: ${G.theories.filter(t=>t.confirmed).length}</p>`;
   end.style.display="block";
-  localStorage.removeItem('gricka_save');
+  localStorage.removeItem('nero_save');
 }
 $("#end-restart").onclick=()=>{ $("#ending").style.display="none"; showTitle(); };
+
+/* =====================================================================
+   ACT CARD
+   ===================================================================== */
+function showActCard(n){
+  const a=ACTS[n]; if(!a) return;
+  $("#actcard").style.backgroundImage=`url("${encodeURI(a.bg)}")`;
+  $("#act-kicker").textContent=a.kicker;
+  $("#act-title").textContent=a.title;
+  $("#act-text").textContent=a.text;
+  $("#actcard").style.display="block";
+  $("#act-go").onclick=()=>{
+    $("#actcard").style.display="none";
+    if(n===4){ /* epilogue twist: show NERA candle scene reference then return */ toast("<span class='ti'>Nera shvaća: ona je sljedeća meta.</span>"); maybeAct3(); }
+    renderScene(); autosave();
+  };
+}
 
 /* =====================================================================
    MENU / SAVE / LOAD
@@ -1443,7 +1554,7 @@ function openMenu(){
   const ov=$("#overlay"); $("#ov-title").textContent="Izbornik";
   const body=$("#ov-body"); body.innerHTML="";
   const box=document.createElement('div'); box.className='center-narr';
-  box.innerHTML=`<p>Grička Sjena</p><p class='small'>Tvoj napredak se sprema automatski.</p>`;
+  box.innerHTML=`<p>NERO - Whispers of Grič</p><p class='small'>Napredak se sprema automatski.</p>`;
   const mk=(label,fn)=>{const b=document.createElement('button');b.className='btn';b.style.margin='8px';b.textContent=label;b.onclick=fn;return b;};
   const row=document.createElement('div'); row.style.textAlign='center'; row.style.marginTop='20px';
   row.appendChild(mk("Spremi igru",()=>{autosave();toast("Igra spremljena.");}));
@@ -1453,8 +1564,8 @@ function openMenu(){
   body.appendChild(box);
   ov.style.display="block";
 }
-function autosave(){ try{ localStorage.setItem('gricka_save',JSON.stringify(G)); }catch(e){} }
-function loadSave(){ try{ const s=localStorage.getItem('gricka_save'); if(s){G=JSON.parse(s); return true;} }catch(e){} return false; }
+function autosave(){ try{ localStorage.setItem('nero_save',JSON.stringify(G)); }catch(e){} }
+function loadSave(){ try{ const s=localStorage.getItem('nero_save'); if(s){G=JSON.parse(s); return true;} }catch(e){} return false; }
 
 /* =====================================================================
    TITLE SCREEN
@@ -1462,8 +1573,10 @@ function loadSave(){ try{ const s=localStorage.getItem('gricka_save'); if(s){G=J
 function showTitle(){
   $("#titlescreen").style.backgroundImage=`url("${encodeURI(IMG.cover)}")`;
   $("#titlescreen").style.display="flex";
-  $("#btn-continue").disabled = !localStorage.getItem('gricka_save');
+  $("#btn-continue").disabled = !localStorage.getItem('nero_save');
 }
+
+/* cannon timer - each shot beyond noon = a new victim (flavor tension) */
 let topTimer=null;
 function fmtTime(s){ const m=Math.floor(s/60), ss=s%60; return String(m).padStart(2,'0')+":"+String(ss).padStart(2,'0'); }
 function startTopTimer(){
@@ -1471,37 +1584,43 @@ function startTopTimer(){
   $("#timer-val").textContent=fmtTime(G.topSeconds);
   topTimer=setInterval(()=>{
     if(G.scene==null) return;
-    if(DLG||HOstate||$("#overlay").style.display==="block") return; // pause during menus/dialogue
+    if(DLG||HOstate||$("#overlay").style.display==="block"||$("#actcard").style.display==="block") return;
     G.topSeconds--;
-    if(G.topSeconds<=0){ G.topSeconds=0; clearInterval(topTimer);
-      $("#timer-val").textContent="06:00"; toast("<span class='ti'>Grički top!</span> Jutro se budi nad Gričem."); return; }
+    if(G.topSeconds<=0){ G.topSeconds=12*60; toast("<span class='ti'>Grički top!</span> Podne nad Gričem."); }
     $("#timer-val").textContent=fmtTime(G.topSeconds);
   },1000);
 }
+
 function startGame(fresh){
   if(fresh || !loadSave()){ G=newState(); }
-  if(typeof G.topSeconds!=='number') G.topSeconds=9*60+47;
+  if(typeof G.topSeconds!=='number') G.topSeconds=11*60+40;
   $("#titlescreen").style.display="none";
   $("#bottombar").style.display="flex";
-  renderFactions(); renderInventory(); renderScene(); startTopTimer();
-  toast("Zagreb, 1599. Top kuca prema zori.");
+  setCrests();
+  renderFactions(); renderInventory(); startTopTimer();
+  if(fresh){ showActCard(1); G.scene="crime_scene"; }
+  renderScene();
+  toast("Zagreb, 18. stoljeće. U mraku grada gori jedna svijeća.");
 }
-$("#btn-new").onclick=()=>{ localStorage.removeItem('gricka_save'); startGame(true); };
+$("#btn-new").onclick=()=>{ localStorage.removeItem('nero_save'); startGame(true); };
 $("#btn-continue").onclick=()=>{ if(loadSave()) startGame(false); };
-$("#btn-about").onclick=()=>{
-  examine("O igri","Grička Sjena (Sjena Griča) — 2D point-and-click murder mystery smješten u Zagreb 1599. Istraga, dijalozi, frakcije Gradec i Kaptol, skriveni predmeti, zagonetke svijeća i četiri završetka. Sve nacrtano u jednoj HTML datoteci.");
-};
+$("#btn-about").onclick=()=>{ $("#about").style.display="flex"; };
+$("#about-close").onclick=()=>{ $("#about").style.display="none"; };
+$("#about").onclick=(e)=>{ if(e.target===$("#about")) $("#about").style.display="none"; };
 
 /* =====================================================================
    NAV + KEYS + SCALING
    ===================================================================== */
-document.querySelectorAll('.nav').forEach(b=>{
+document.querySelectorAll('.navhit').forEach(b=>{
+  if(!b.dataset.panel) return;
   b.onclick=()=>{ if(DLG)return; openPanel(b.dataset.panel); };
 });
+$("#btn-hint").onclick=()=>showHint();
 document.addEventListener('keydown',e=>{
   if($("#titlescreen").style.display!=="none"&&$("#titlescreen").style.display!=="") return;
+  if($("#actcard").style.display==="block") return;
   const k=e.key.toLowerCase();
-  if(k==='escape'){ 
+  if(k==='escape'){
     if($("#examine").style.display==="flex"){$("#examine").style.display="none";return;}
     if($("#overlay").style.display==="block"){$("#overlay").style.display="none";return;}
     if(DLG){return;}
@@ -1513,7 +1632,7 @@ document.addEventListener('keydown',e=>{
       const choices=n.choices.filter(c=>!c.cond||c.cond());
       const idx=parseInt(k)-1;
       if(idx>=0&&idx<choices.length){ chooseDialogue(choices[idx]); }
-    } else if(n.end && (k==='enter'||k===' ')){ closeDialogue(); }
+    }
     return;
   }
   if($("#overlay").style.display==="block") return;
@@ -1521,13 +1640,53 @@ document.addEventListener('keydown',e=>{
   if(k==='m')openPanel('map');
   if(k==='i')openPanel('inventory');
   if(k==='k')openPanel('codex');
+  if(k==='h')showHint();
 });
 
+/* ---------- contextual hint ---------- */
+function currentHint(){
+  const f=G.flags;
+  switch(G.scene){
+    case 'crime_scene':
+      if(!f.crime_done) return "Pregledaj sve u sobi: uzmi uzorak voska sa svijeće, pogledaj praznu kutiju i zapečaćena vrata. Onda izađi kroz 'Vrata na ulicu' (lijevo).";
+      return "Gotova si ovdje. Izađi kroz 'Vrata na ulicu' (lijevo) i potraži Mudru staricu kraj Kamenitih vrata.";
+    case 'alley':
+      if(!f.talked_witch) return "Razgovaraj s Mudrom staricom u niši (lijevo) i saslušaj sve što ti nudi - usmjerit će te dalje.";
+      return "Kreni 'Na Dolac →' (desno) na tržnicu, ili otvori kartu (M).";
+    case 'dolac':
+      if(f.dolac_night && !f.dolac_done) return "Pretraži trgovčevu tezgu (desno) i pronađi lažnu ogrlicu. 🧭 Kompas pokazuje gdje tražiti.";
+      if(f.dolac_done) return "Razotkrila si lažnu ogrlicu. Provjeri imaš li pergament, pa kreni 'Stube u grad →' u zlatarevu radionicu.";
+      if(!hasItem('blank_parchment')) return "Kupi pergament na tezgi (lijevo), pa ispitaj sumnjivog trgovca s nakitom (desno).";
+      return "Ispitaj sumnjivog trgovca (desno). Njegove laži pretvore tržnicu u suton i on pobjegne.";
+    case 'goldsmith':
+      if(!f.juraj_allow) return "Razgovaraj sa zlatarom Jurajem i steci njegovo povjerenje prije nego što kopaš po stolu.";
+      if(!f.ledger_done) return "Pretraži radni stol (sredina) i pronađi pet tragova. Pritisni 🧭 Kompas ako zapneš.";
+      if(!hasItem('forged_letter')) return "Spoji Prazan pergament i Voštani pečat u Krivotvoreno pismo (inventar, I).";
+      return "Imaš krivotvoreno pismo. Kreni 'Van →' u Kaptolski arhiv (desni rub).";
+    case 'archive':
+      if(!f.canon_help) return "Pridobij Redovnika Blaža u razgovoru. Ako imaš Krivotvoreno pismo, pokaži mu ga - to ga uvjeri. (Pismo spojiš od pergamenta i voštanog pečata u inventaru.)";
+      if(fac('kaptol')>=12 && !hasItem('glagol_manuscript')) return "Uzmi glagoljski rukopis s polica (lijevo) - trebat će ti za zagonetku svijeća. Zatim preklopi dvije karte na stolu.";
+      if(!f.maps_overlaid) return "Otvori 'Dvije karte grada' na stolu i preklopi ih da otkriješ skrivenu sobu.";
+      return "Karte su preklopljene. Siđi stubama u kriptu (dolje lijevo).";
+    case 'crypt':
+      if(!hasItem('crypt_key') && !f.candle_solved) return "Trebaš ključ kripte. Otvori inventar (I) i spoji Glagoljski rukopis s Uzorkom voska da ga skuješ.";
+      return "Imaš ključ. Otvori 'Vrata sobe svijeća' (sredina).";
+    case 'candle_room':
+      if(!f.candle_solved) return "Pročitaj uklesani natpis (lijevo): 'samo jedna govori istinu'. U zagonetki upali pravu svijeću - onu drugu.";
+      if(!hasItem('necklace_real')) return "Mehanizam je otvoren. Otvori oltar i uzmi pravu ogrlicu.";
+      return "Imaš pravu ogrlicu i razotkrila si prijevaru. Kreni 'Na Krvavi most →' (dolje).";
+    case 'bridge':
+      if(!f.confronted) return "Razgovaraj sa 'Sjenom na mostu' i suoči je dokazima. Što više dokaza nosiš, to je kraj snažniji.";
+      return "Suočenje je gotovo. Kreni na 'Kraj mosta' (desno) i donesi konačnu odluku.";
+  }
+  return "Istraži scenu: klikni osvijetljene predmete i likove. Otvori dnevnik (J) za cilj, a inventar (I) za spajanje tragova.";
+}
+function showHint(){ if(DLG) return; examine("💡 Savjet", currentHint()); }
+
 function scaleStage(){
-  const s=$("#stage"); const pad=0;
-  const sx=(window.innerWidth-pad)/1280, sy=(window.innerHeight-pad)/720;
-  const sc=Math.min(sx,sy);
-  s.style.transform=`scale(${sc})`;
+  const s=$("#stage");
+  const sx=window.innerWidth/1280, sy=window.innerHeight/720;
+  s.style.transform=`scale(${Math.min(sx,sy)})`;
 }
 window.addEventListener('resize',scaleStage);
 scaleStage();
